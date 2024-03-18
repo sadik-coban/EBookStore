@@ -27,9 +27,9 @@ public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepository
         return result;
     }
 
-    public async Task<int> ExecuteUpdateAsync(Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> setPropertyCalls, CancellationToken cancellationToken = default)
+    public async Task<int> ExecuteUpdateAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> setPropertyCalls, CancellationToken cancellationToken = default)
     {
-        var result = await Command.ExecuteUpdateAsync(setPropertyCalls, cancellationToken);
+        var result = await Command.Where(predicate).ExecuteUpdateAsync(setPropertyCalls, cancellationToken);
         return result;
     }
 

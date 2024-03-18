@@ -8,7 +8,7 @@ public interface IRepositoryBase<TEntity>
 {
     Task<int> CreateAsync(TEntity entity, CancellationToken cancellationToken = default);
     Task<int> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
-    Task<int> ExecuteUpdateAsync(Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> setPropertyCalls, CancellationToken cancellationToken = default);
+    Task<int> ExecuteUpdateAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> setPropertyCalls, CancellationToken cancellationToken = default);
     Task<int> ExecuteDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
     Task<IPagedList<TEntity>> GetListAsync(
         Expression<Func<TEntity, bool>>? predicate = null,

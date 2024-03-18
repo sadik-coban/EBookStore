@@ -37,9 +37,7 @@ public class CatalogsController(ICatalogsService catalogsService) : BaseControll
     {
         if (ModelState.IsValid)
         {
-            catalog.DateCreated = DateTime.UtcNow;
-            catalog.UserId = UserId!.Value;
-            var result = await catalogsService.CreateCatalogAsync(catalog);
+            var result = await catalogsService.CreateCatalogAsync(catalog,UserId!.Value);
             if (result < 0)
             {
                 ModelState.AddModelError("", "Bu katalog zaten oluşturulmuş");
@@ -48,5 +46,33 @@ public class CatalogsController(ICatalogsService catalogsService) : BaseControll
             return RedirectToAction(nameof(Index));
         }
         return View(catalog);
+    }
+
+    public async Task<IActionResult> Edit(Guid id)
+    {
+        return View(await catalogsService.GetCatalogById(id));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(Catalog catalog)
+    {
+        if (ModelState.IsValid)
+        {
+            var result = await catalogsService.UpdateCatalogAsync(catalog);
+            if (result < 0)
+            {
+                ModelState.AddModelError("", "Bu katalog zaten oluşturulmuş");
+                return View(catalog);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        return View(catalog);
+    }
+
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await catalogsService.DeleteCatalogAsync(id);
+        return RedirectToAction(nameof(Index));
     }
 }

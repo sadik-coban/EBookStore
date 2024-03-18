@@ -35,8 +35,8 @@
                             <div class="dropdown">
                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit-alt me-1"></i> Düzenle</a>
-                                    <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Sil</a>
+                                    <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id"><i class="bx bx-edit-alt me-1"></i> Düzenle</a>
+                                    <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id"><i class="bx bx-trash me-1"></i> Sil</a>
                                 </div>
                             </div>
                         </td>
@@ -55,7 +55,7 @@
         <div class="col-lg-6">
             <div class="demo-inline-spacing">
                 <!-- Basic Pagination -->
-                <nav aria-label="Page navigation">
+                <nav aria-label="Page navigation" class="d-flex justify-content-center">
                     <ul class="pagination">
                         <li class="page-item first">
                             <a class="page-link" asp-route-pageNumber = "1"><i class="tf-icon bx bx-chevrons-left"></i></a>

@@ -60,12 +60,14 @@ public class CatalogsService(IRepositoryBase<Catalog> catalogsRepository) : ICat
     {
         return await catalogsRepository.GetAsync(p => p.Id == id, withDeleted: withDeleted);
     }
-    public async Task<int> CreateCatalogAsync(Catalog entity)
+    public async Task<int> CreateCatalogAsync(Catalog catalog,Guid userId)
     {
         try
         {
+            catalog.DateCreated = DateTime.UtcNow;
+            catalog.UserId = userId;
             // Attempt to save changes to the database
-            var result = await catalogsRepository.CreateAsync(entity);
+            var result = await catalogsRepository.CreateAsync(catalog);
             return result;
         }
         catch (DbUpdateException ex)
@@ -84,9 +86,9 @@ public class CatalogsService(IRepositoryBase<Catalog> catalogsRepository) : ICat
             }
         }   
     }
-    public async Task<int> UpdateCatalogAsync(string name)
+    public async Task<int> UpdateCatalogAsync(Catalog catalog)
     {
-        var result = await catalogsRepository.ExecuteUpdateAsync(s => s.SetProperty(p => p.Name,name));
+        var result = await catalogsRepository.ExecuteUpdateAsync(p => p.Id == catalog.Id,s => s.SetProperty(p => p.Name, catalog.Name));
         return result;
     }
     public async Task<int> DeleteCatalogAsync(Guid id)
