@@ -1,0 +1,42 @@
+﻿@model RegisterViewModel
+
+
+@{
+    ViewData["Title"] = "Yeni Üyelik";
+}
+
+<form method="post">
+    <div class="mb-3 col-12 col-lg-4">
+        <label class="form-label" asp-for="UserName"></label>
+        <input class="form-control" asp-for="UserName" placeholder="e-posta adresinizi yazınız..." />
+        <span asp-validation-for="UserName"></span>
+    </div>
+    <div class="mb-3 col-12 col-lg-4">
+        <label class="form-label" asp-for="Name"></label>
+        <input class="form-control" asp-for="Name" placeholder="adınızı ve soyadınızı yazınız..." />
+        <span asp-validation-for="Name"></span>
+    </div>
+    <div class="mb-3 col-12 col-lg-4">
+        <label class="form-label" asp-for="Password"></label>
+        <input class="form-control" asp-for="Password" placeholder="parolanızı yazınız..." />
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div class="mb-3 col-12 col-lg-4">
+        <label class="form-label" asp-for="PasswordCheck"></label>
+        <input class="form-control" asp-for="PasswordCheck" placeholder="parolanızı tekrar yazınız..." />
+        <span asp-validation-for="PasswordCheck"></span>
+    </div>
+    <hr />
+    <button type="submit" class="btn btn-primary">Kaydol</button>
+    <p>&nbsp;</p>
+    @if (!ViewContext.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <div asp-validation-summary="All"></div>
+        </div>
+    }
+</form>
+
+@section Scripts{ 
+    <partial name="_ValidationScriptsPartial" />
+}
