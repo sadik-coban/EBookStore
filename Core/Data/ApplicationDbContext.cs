@@ -20,6 +20,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser,Applicatio
         base.OnModelCreating(builder);
     }
     public DbSet<CarouselImage> CarouselImages { get; set; }
+    public DbSet<Author> Authors { get; set; }
+    public DbSet<Publisher> Publishers { get; set; }
     public DbSet<Catalog> Catalogs { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<CommentImage> CommentImages { get; set; }

@@ -108,6 +108,6 @@ public class PublishersService(IRepositoryBase<Publisher> publishersRepository) 
         {
             Id = p.Id,
             Name = p.Name,
-        }), p => p.Enabled, query => query.OrderBy(p => p.Name), include: null, withDeleted: false);
+        }), p => p.Enabled, query => query.OrderBy(p => p.Name), include: null, withDeleted: false, asNoTracking: true);
     }
 }

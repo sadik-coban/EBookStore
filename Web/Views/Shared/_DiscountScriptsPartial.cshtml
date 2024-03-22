@@ -1,0 +1,13 @@
+﻿<script>
+    $(() => {
+        $('#Price').on('change', getDiscountedPrice);
+        $('#DiscountRate').on('change', getDiscountedPrice);
+
+        function getDiscountedPrice(e) {
+            const price = $('#Price').val();
+            const discountRate = $('#DiscountRate').val();
+
+            $('#DiscountedPrice').val(price - (price * discountRate / 100));
+        }
+    });
+</script>

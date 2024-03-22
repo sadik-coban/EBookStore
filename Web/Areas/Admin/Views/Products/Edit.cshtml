@@ -10,10 +10,15 @@
 
 <div class="card mb-4">
     <div class="card-body">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <partial name="_FieldsPartial" model="Model" />
             <hr />
             <button type="submit" class="btn btn-primary">Gönder</button>
         </form>
     </div>
 </div>
+
+@section scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DiscountScriptsPartial" />
+}

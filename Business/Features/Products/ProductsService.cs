@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using Core.Data;
+using Core.Entities;
 using Core.Enums;
 using Core.Extensions;
 using Core.Infrastructure.Base.EntitiesBase;
@@ -68,8 +69,8 @@ public class ProductsService(IRepositoryBase<Product> productsRepository, IRepos
     public async Task<int> CreateProductAsync(ProductInputModel productInput, Guid userId)
     {
 
-        //try
-        //{
+        try
+        {
             string toBase64String;
             if (productInput.Image is not null)
             {
@@ -80,9 +81,10 @@ public class ProductsService(IRepositoryBase<Product> productsRepository, IRepos
             {
                 toBase64String = string.Empty;
             }
-            var catalogs = await catalogsRepository.GetListAsync(predicate: p => productInput.Catalogs.Any(q => q == p.Id),orderBy:null, include: null,withDeleted: false);
-            var authors = await authorsRepository.GetListAsync(predicate: p => productInput.Authors.Any(q => q == p.Id), orderBy: null, include: null, withDeleted: false);
-            var catalog = new Product
+
+            var catalogs = await catalogsRepository.GetListAsync(predicate: p => productInput.Catalogs.Any(q => q == p.Id),orderBy:null, include: null,withDeleted: false, asNoTracking: false);
+            var authors = await authorsRepository.GetListAsync(predicate: p => productInput.Authors.Any(q => q == p.Id), orderBy: null, include: null, withDeleted: false, asNoTracking: false);
+            var product = new Product
             {
                 Name = productInput.Name,
                 Enabled = productInput.Enabled,
@@ -97,30 +99,31 @@ public class ProductsService(IRepositoryBase<Product> productsRepository, IRepos
                 UserId = userId,
             };
             // Attempt to save changes to the database
-            var result = await productsRepository.CreateAsync(catalog);
+            var result = await productsRepository.CreateAsync(product);
+            
             return result;
-        //}
-        //catch (DbUpdateException ex)
-        //{
-        //    // Check if it's a duplicate key violation
-        //    if (ex.InnerException is SqlException sqlException && (sqlException.Number == 2627 || sqlException.Number == 2601))
-        //    {
-        //        // Handle the duplicate key violation here
-        //        // For example, log the error or inform the user
-        //        return -1;
-        //    }
-        //    else
-        //    {
-        //        // Rethrow the exception if it's not a duplicate key violation
-        //        throw;
-        //    }
-        //}
+    }
+        catch (DbUpdateException ex)
+        {
+            // Check if it's a duplicate key violation
+            if (ex.InnerException is SqlException sqlException && (sqlException.Number == 2627 || sqlException.Number == 2601))
+            {
+                // Handle the duplicate key violation here
+                // For example, log the error or inform the user
+                return -1;
+            }
+            else
+            {
+                // Rethrow the exception if it's not a duplicate key violation
+                throw;
+            }
+        }
     }
     public async Task<int> UpdateProductAsync(ProductInputModel productInput, Guid productId)
     {
-        var product = await productsRepository.GetAsync(p => p.Id == productId);
-        var catalogs = await catalogsRepository.GetListAsync(predicate: p => productInput.Catalogs.Any(q => q == p.Id), orderBy: null, include: null, withDeleted: false);
-        var authors = await authorsRepository.GetListAsync(predicate: p => productInput.Authors.Any(q => q == p.Id), orderBy: null, include: null, withDeleted: false);
+        var product = await productsRepository.GetAsync(p => p.Id == productId, asNoTracking: false, include: p => p.Include(p => p.Catalogs).Include(p => p.Authors));
+        var catalogs = await catalogsRepository.GetListAsync(predicate: p => productInput.Catalogs.Any(q => q == p.Id), orderBy: null, include: null, withDeleted: false, asNoTracking: false);
+        var authors = await authorsRepository.GetListAsync(predicate: p => productInput.Authors.Any(q => q == p.Id), orderBy: null, include: null, withDeleted: false, asNoTracking: false);
 
 
         product.Catalogs.Clear();

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 using X.PagedList;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Core.Infrastructure.Base.RepositoriesBase;
 public interface IRepositoryBase<TEntity>
@@ -14,7 +13,8 @@ public interface IRepositoryBase<TEntity>
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
-        bool withDeleted = false);
+        bool withDeleted = false,
+        bool asNoTracking = true);
 
     Task<IPagedList<TEntity>> GetListAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
@@ -22,13 +22,15 @@ public interface IRepositoryBase<TEntity>
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         int pageNumber = 1,
         int pageSize = 10,
-        bool withDeleted = false);
+        bool withDeleted = false,
+        bool asNoTracking = true);
     Task<ICollection<TResult>> GetListAsync<TResult>(
         Func<IQueryable<TEntity>, IQueryable<TResult>> select,
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
-    bool withDeleted = false);
+        bool withDeleted = false,
+        bool asNoTracking = true);
     Task<IPagedList<TResult>> GetListAsync<TResult>(
         Func<IQueryable<TEntity>, IQueryable<TResult>> select,
         Expression<Func<TEntity, bool>>? predicate = null,
@@ -36,7 +38,8 @@ public interface IRepositoryBase<TEntity>
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         int pageNumber = 1,
         int pageSize = 10,
-        bool withDeleted = false);
+        bool withDeleted = false,
+        bool asNoTracking = true);
 
 
     Task<IPagedList<TResult>> GetListAsync<TResult>(
@@ -46,13 +49,15 @@ public interface IRepositoryBase<TEntity>
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         int pageNumber = 1,
         int pageSize = 10,
-        bool withDeleted = false);
+        bool withDeleted = false,
+        bool asNoTracking = true);
 
     Task<TEntity> GetAsync(
         Expression<Func<TEntity, bool>> predicate,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         bool withDeleted = false,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default,
+        bool asNoTracking = true);
 
 
     Task<TResult> GetAsync<TResult>(
@@ -60,12 +65,14 @@ public interface IRepositoryBase<TEntity>
         Func<IQueryable<TEntity>, IQueryable<TResult>> select,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         bool withDeleted = false,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default,
+        bool asNoTracking = true);
 
     Task<TResult> GetAsync<TResult>(
         Expression<Func<TEntity, bool>> predicate,
         Func<TEntity, TResult> selector,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         bool withDeleted = false,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default,
+        bool asNoTracking = true);
 }

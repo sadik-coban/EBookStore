@@ -43,7 +43,7 @@
         {
             <div class="col">
                 <div class="form-check form-switch">
-                    <input id="catalog_@author.Value" type="checkbox" class="form-check-input" name="Catalogs" @(Model.Catalogs.Any(p => p.ToString() == author.Value) ? "checked" : "") value="@author.Value" />
+                    <input id="catalog_@author.Value" type="checkbox" class="form-check-input" name="Authors" @(Model.Authors.Any(p => p.ToString() == author.Value) ? "checked" : "") value="@author.Value" />
                     <label for="catalog_@author.Value" class="form-check-label">@author.Text</label>
                 </div>
             </div>
@@ -53,13 +53,16 @@
 
 @if (ViewContext.RouteData.Values["action"]?.ToString() == "Edit")
 {
-    <div class="mb-3 col-12 col-lg-4">
-        <img src="@Model.OriginalImage" width="400" height="300" />
-    </div>
+    if(Model.OriginalImage is not null || Model.OriginalImage != string.Empty)
+    {
+        <div class="mb-3 col-12 col-lg-4">
+            <img src="@Model.OriginalImage" width="400" height="300" onerror="this.onerror=null;this.src = '/images/no-image.jpg'" />
+        </div>
+    }
 }
 <div class="mb-3 col-12 col-lg-4">
     <label class="form-label" asp-for="Image"></label>
-    <input class="form-control" asp-for="Image" />
+    <input class="form-control" asp-for="Image" accept="image/*" />
 </div>
 
 <div class="row m-0 col-12 col-lg-4">

@@ -9,10 +9,7 @@ using X.PagedList;
 namespace Core.Infrastructure.Base.RepositoriesBase;
 public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepositoryBase<TEntity> where TEntity : AuditableEntity
 {
-    protected IQueryable<TEntity> Query => context.Set<TEntity>().AsNoTracking();
-
-    protected IQueryable<TEntity> Command => context.Set<TEntity>();
-
+    protected IQueryable<TEntity> Query => context.Set<TEntity>();
 
     public async Task<int> CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
@@ -30,13 +27,13 @@ public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepository
 
     public async Task<int> ExecuteUpdateAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> setPropertyCalls, CancellationToken cancellationToken = default)
     {
-        var result = await Command.Where(predicate).ExecuteUpdateAsync(setPropertyCalls, cancellationToken);
+        var result = await Query.Where(predicate).ExecuteUpdateAsync(setPropertyCalls, cancellationToken);
         return result;
     }
 
     public async Task<int> ExecuteDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
-        var result = await Command.Where(predicate).ExecuteDeleteAsync(cancellationToken);
+        var result = await Query.Where(predicate).ExecuteDeleteAsync(cancellationToken);
         return result;
     }
 
@@ -44,9 +41,14 @@ public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepository
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
-        bool withDeleted = false)
+        bool withDeleted = false,
+        bool asNoTracking = true)
     {
         var query = Query;
+        if (asNoTracking)
+        {
+            query = query.AsNoTracking();
+        }
         query = GetListBase(predicate, include, withDeleted, orderBy, query);
         return await query.ToListAsync();
     }
@@ -56,9 +58,14 @@ public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepository
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         int pageNumber = 1,
         int pageSize = 10,
-        bool withDeleted = false)
+        bool withDeleted = false,
+        bool asNoTracking = true)
     {
         var query = Query;
+        if (asNoTracking)
+        {
+            query = query.AsNoTracking();
+        }
         query = GetListBase(predicate, include, withDeleted, orderBy, query);
         return await query.ToPagedListAsync(pageNumber, pageSize);
     }
@@ -68,9 +75,14 @@ public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepository
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
-    bool withDeleted = false)
+        bool withDeleted = false,
+    bool asNoTracking = true)
     {
         var query = Query;
+        if (asNoTracking)
+        {
+            query = query.AsNoTracking();
+        }
         query = GetListBase(predicate, include, withDeleted, orderBy, query);
         return await select(query).ToListAsync();
     }
@@ -82,9 +94,14 @@ public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepository
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         int pageNumber = 1,
         int pageSize = 10,
-        bool withDeleted = false)
+        bool withDeleted = false,
+    bool asNoTracking = true)
     {
         var query = Query;
+        if (asNoTracking)
+        {
+            query = query.AsNoTracking();
+        }
         query = GetListBase(predicate, include, withDeleted, orderBy, query);
         return await select(query).ToPagedListAsync(pageNumber, pageSize);
     }
@@ -97,9 +114,14 @@ public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepository
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         int pageNumber = 1,
         int pageSize = 10,
-        bool withDeleted = false)
+        bool withDeleted = false,
+    bool asNoTracking = true)
     {
         var query = Query;
+        if (asNoTracking)
+        {
+            query = query.AsNoTracking();
+        }
         query = GetListBase(predicate, include, withDeleted, orderBy, query);
         return await query.Select(selector).ToPagedListAsync(pageNumber, pageSize);
     }
@@ -108,9 +130,14 @@ public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepository
         Expression<Func<TEntity, bool>> predicate,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         bool withDeleted = false,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+    bool asNoTracking = true)
     {
         var query = Query;
+        if (asNoTracking)
+        {
+            query = query.AsNoTracking();
+        }
         query = GetBase(include, withDeleted, query);
         TEntity result = await query.FirstOrDefaultAsync(predicate, cancellationToken) ?? throw new ArgumentNullException(nameof(result), $"The {nameof(TEntity).ToLower()} does not exists");
         return result;
@@ -122,9 +149,14 @@ public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepository
         Func<IQueryable<TEntity>, IQueryable<TResult>> select,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         bool withDeleted = false,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+    bool asNoTracking = true)
     {
         var query = Query;
+        if (asNoTracking)
+        {
+            query = query.AsNoTracking();
+        }
         query = GetBase(include, withDeleted, query);
         query = query.Where(predicate);
         TResult result = await select(query).FirstOrDefaultAsync(cancellationToken) ?? throw new ArgumentNullException(nameof(result), $"The {nameof(TEntity).ToLower()} does not exists");
@@ -136,15 +168,19 @@ public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepository
         Func<TEntity, TResult> selector,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
         bool withDeleted = false,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        bool asNoTracking = true)
     {
         var query = Query;
+        if (asNoTracking)
+        {
+            query = query.AsNoTracking();
+        }
         query = GetBase(include, withDeleted, query);
         query = query.Where(predicate);
         TResult result = await ((IQueryable<TResult>)query.Select(selector)).FirstOrDefaultAsync() ?? throw new ArgumentNullException(nameof(result), $"The {nameof(TEntity).ToLower()} does not exists");
         return result;
     }
-
     private IQueryable<TEntity> GetBase(Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include, bool withDeleted, IQueryable<TEntity> query)
     {
         if (include != null)

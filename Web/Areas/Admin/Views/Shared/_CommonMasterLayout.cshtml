@@ -1,7 +1,7 @@
 @inject IHttpContextAccessor httpContextAccessor
 
 <!DOCTYPE html>
-<html lang="en"
+<html lang="tr"
   class='light-style layout-menu-fixed'
   data-theme="theme-default" data-assets-path='@((httpContextAccessor.HttpContext?.Request.PathBase ?? "") + "/")'
   data-framework="aspnetcore-mvc"
@@ -59,7 +59,7 @@
 
   <!-- Place this tag in your head or just before your close body tag. -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
-
+   @RenderSection("Scripts", required: false)
 </body>
 
 </html>

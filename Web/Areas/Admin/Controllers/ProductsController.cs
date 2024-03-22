@@ -53,8 +53,8 @@ public class ProductsController
     public async Task<IActionResult> Create(ProductInputModel product)
     {
         await PopulateDropdowns();
-        //if (ModelState.IsValid)
-        //{
+        if (ModelState.IsValid)
+        {
             var result = await productsService.CreateProductAsync(product, UserId!.Value);
             if (result < 0)
             {
@@ -62,8 +62,8 @@ public class ProductsController
                 return View(product);
             }
             return RedirectToAction(nameof(Index));
-        //}
-        //return RedirectToAction(nameof(Index));
+        }
+        return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> Edit(Guid id)
@@ -80,7 +80,7 @@ public class ProductsController
             Catalogs = product.Catalogs.Select(p => p.Id).ToList(),
             Authors = product.Authors.Select(p => p.Id).ToList(),
             Publisher = product.PublisherId,
-            OriginalImage = product.Image
+            OriginalImage = product.Image ?? string.Empty
         });
     }
 

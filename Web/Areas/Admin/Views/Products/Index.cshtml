@@ -38,7 +38,7 @@
                             <img src="@item.Image" class="img-fluid object-fit-contain" alt="@item.Name" height="80" width="80" onerror="this.onerror=null;this.src = '/images/no-image.jpg'" />
                         </td>
                         <td>@item.Name</td>
-                        <td>@item.User!.Name</td>
+                        
                         <td>
                             @if (item.DiscountRate > 0)
                             {
@@ -59,6 +59,7 @@
                         <td>
                             @item.Publisher.Name
                         </td>
+                        <td>@item.User!.Name</td>
                         <td>@item.DateCreated.ToLocalTime().Date.ToShortDateString()</td>
                         @if (item.Enabled)
                         {

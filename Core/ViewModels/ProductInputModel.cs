@@ -16,17 +16,18 @@ public class ProductInputModel
     [Display(Name = "Ürün Adı")]
     [Required(ErrorMessage = "{0} alanı boş bırakılamaz!")]
     [MaxLength(400, ErrorMessage = "{0} alanı en fazla {1} karakter olmalıdır!")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
 
     [Display(Name = "Fiyat")]
     [Required(ErrorMessage = "{0} alanı boş bırakılamaz!")]
     [RegularExpression(@"^[0-9]+(,{1}[0-9]{1,2})?$", ErrorMessage = "Lütfen geçerli bir fiyat yazınız!")]
-    public string Price { get; set; }
+    public string Price { get; set; } = string.Empty;
 
 
     [Display(Name = "Açıklama")]
-    public string? Description { get; set; }
+    [Required(ErrorMessage = "{0} alanı boş bırakılamaz!")]
+    public string Description { get; set; } = string.Empty;
 
 
     [Display(Name = "Görsel")]
