@@ -1,17 +1,17 @@
-﻿@model IPagedList<Catalog>
+﻿@model IPagedList<Author>
 @{
-    ViewData["Title"] = "Katalog";
+    ViewData["Title"] = "Yazar";
 }
 
 @* ************** Content ************** *@
 <h4 class="py-3 mb-4">
-    <span class="text-muted fw-light">Kataloglar /</span> 
+    <span class="text-muted fw-light">Yazarlar /</span>
 </h4>
 
 <!-- Basic Bootstrap Table -->
 <div class="card">
     <div class="d-flex justify-content-between">
-        <h5 class="card-header">Kataloglar</h5>
+        <h5 class="card-header">Yazarlar</h5>
         <a type="button" class="btn btn-primary m-3" asp-action="Create">Ekle</a>
     </div>
     <div class="table-responsive text-nowrap">

@@ -1,4 +1,4 @@
-﻿@model Catalog
+﻿@model CatalogInputModel
 @{
     ViewData["Title"] = "Yeni Katalog";
 }
@@ -11,10 +11,8 @@
 <div class="card mb-4">
     <div class="card-body">
         <form asp-action="Create">
-            <div class="mb-3">
-                <label class="form-label" for="basic-default-fullname">İSİM</label>
-                <input type="text" class="form-control" id="basic-default-fullname" placeholder="Çizgi Roman" asp-for="Name"/>
-            </div>
+            <partial name="_FieldsPartial" model="Model" />
+            <hr />
             <button type="submit" class="btn btn-primary">Gönder</button>
         </form>
     </div>

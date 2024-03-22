@@ -10,6 +10,12 @@ public interface IRepositoryBase<TEntity>
     Task<int> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
     Task<int> ExecuteUpdateAsync(Expression<Func<TEntity, bool>> predicate, Expression<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>> setPropertyCalls, CancellationToken cancellationToken = default);
     Task<int> ExecuteDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
+    Task<ICollection<TEntity>> GetListAsync(
+        Expression<Func<TEntity, bool>>? predicate = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
+        bool withDeleted = false);
+
     Task<IPagedList<TEntity>> GetListAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
@@ -17,7 +23,12 @@ public interface IRepositoryBase<TEntity>
         int pageNumber = 1,
         int pageSize = 10,
         bool withDeleted = false);
-
+    Task<ICollection<TResult>> GetListAsync<TResult>(
+        Func<IQueryable<TEntity>, IQueryable<TResult>> select,
+        Expression<Func<TEntity, bool>>? predicate = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
+    bool withDeleted = false);
     Task<IPagedList<TResult>> GetListAsync<TResult>(
         Func<IQueryable<TEntity>, IQueryable<TResult>> select,
         Expression<Func<TEntity, bool>>? predicate = null,

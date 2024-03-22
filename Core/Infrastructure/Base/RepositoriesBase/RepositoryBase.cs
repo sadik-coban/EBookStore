@@ -2,6 +2,7 @@
 using Core.Infrastructure.Base.EntitiesBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using System.Linq;
 using System.Linq.Expressions;
 using X.PagedList;
 
@@ -39,7 +40,16 @@ public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepository
         return result;
     }
 
-
+    public async Task<ICollection<TEntity>> GetListAsync(
+        Expression<Func<TEntity, bool>>? predicate = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
+        bool withDeleted = false)
+    {
+        var query = Query;
+        query = GetListBase(predicate, include, withDeleted, orderBy, query);
+        return await query.ToListAsync();
+    }
     public async Task<IPagedList<TEntity>> GetListAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
@@ -51,6 +61,18 @@ public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepository
         var query = Query;
         query = GetListBase(predicate, include, withDeleted, orderBy, query);
         return await query.ToPagedListAsync(pageNumber, pageSize);
+    }
+
+    public async Task<ICollection<TResult>> GetListAsync<TResult>(
+        Func<IQueryable<TEntity>, IQueryable<TResult>> select,
+        Expression<Func<TEntity, bool>>? predicate = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include = null,
+    bool withDeleted = false)
+    {
+        var query = Query;
+        query = GetListBase(predicate, include, withDeleted, orderBy, query);
+        return await select(query).ToListAsync();
     }
 
     public async Task<IPagedList<TResult>> GetListAsync<TResult>(

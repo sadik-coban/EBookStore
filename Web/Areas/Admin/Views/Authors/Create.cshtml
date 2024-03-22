@@ -1,16 +1,16 @@
-﻿@model CatalogInputModel
+﻿@model AuthorInputModel
 @{
-    ViewData["Title"] = "Katalog Güncelle";
+    ViewData["Title"] = "Yeni Yazar";
 }
 
 @* ************** Content ************** *@
 <h4 class="py-3 mb-4">
-    <span class="text-muted fw-light">Kataloglar /</span> Katalog Güncelle
+    <span class="text-muted fw-light">Yazar /</span> Yeni Yazar Ekle
 </h4>
 
 <div class="card mb-4">
     <div class="card-body">
-        <form asp-action="Edit">
+        <form asp-action="Create">
             <partial name="_FieldsPartial" model="Model" />
             <hr />
             <button type="submit" class="btn btn-primary">Gönder</button>

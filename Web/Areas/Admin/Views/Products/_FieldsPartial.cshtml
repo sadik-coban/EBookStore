@@ -1,0 +1,97 @@
+﻿@model ProductInputModel
+
+<div class="mb-3 col-12 col-lg-4">
+    <label class="form-label" asp-for="Name"></label>
+    <input class="form-control" asp-for="Name" />
+    <span asp-validation-for="Name"></span>
+</div>
+<div class="mb-3 col-12">
+    <label class="form-label" asp-for="Catalogs"></label>
+    <div class="row row-cols-1 row-cols-lg-6">
+        @foreach (var catalog in (ViewBag.Catalogs as IEnumerable<SelectListItem>)!)
+        {
+            <div class="col">
+                <div class="form-check form-switch">
+                    <input id="catalog_@catalog.Value" type="checkbox" class="form-check-input" name="Catalogs" @(Model.Catalogs.Any(p => p.ToString() == catalog.Value) ? "checked" : "") value="@catalog.Value" />
+                    <label for="catalog_@catalog.Value" class="form-check-label">@catalog.Text</label>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="mb-3 col-12">
+    <label class="form-label" asp-for="Publisher"></label>
+    <div class="row row-cols-1 row-cols-lg-6">
+        @foreach (var publisher in (ViewBag.Publishers as IEnumerable<SelectListItem>)!)
+        {
+            <div class="col">
+                <div class="form-check">
+                    <input id="publisher_@publisher.Value" type="radio" class="form-check-input" name="Publisher" @(Model.Publisher.ToString() == publisher.Value ? "checked" : "") value="@publisher.Value" />
+                    <label for="publisher_@publisher.Value" class="form-check-label">@publisher.Text</label>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+<div class="mb-3 col-12">
+    <label class="form-label" asp-for="Authors"></label>
+    <div class="row row-cols-1 row-cols-lg-6">
+        @foreach (var author in (ViewBag.Authors as IEnumerable<SelectListItem>)!)
+        {
+            <div class="col">
+                <div class="form-check form-switch">
+                    <input id="catalog_@author.Value" type="checkbox" class="form-check-input" name="Catalogs" @(Model.Catalogs.Any(p => p.ToString() == author.Value) ? "checked" : "") value="@author.Value" />
+                    <label for="catalog_@author.Value" class="form-check-label">@author.Text</label>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@if (ViewContext.RouteData.Values["action"]?.ToString() == "Edit")
+{
+    <div class="mb-3 col-12 col-lg-4">
+        <img src="@Model.OriginalImage" width="400" height="300" />
+    </div>
+}
+<div class="mb-3 col-12 col-lg-4">
+    <label class="form-label" asp-for="Image"></label>
+    <input class="form-control" asp-for="Image" />
+</div>
+
+<div class="row m-0 col-12 col-lg-4">
+    <div class="mb-3 col-6">
+        <label class="form-label" asp-for="Price"></label>
+        <input class="form-control" asp-for="Price" />
+        <span asp-validation-for="Price"></span>
+    </div>
+    <div class="mb-3 col-6">
+        <label class="form-label" asp-for="DiscountRate"></label>
+        <input class="form-control" asp-for="DiscountRate" />
+        <span asp-validation-for="DiscountRate"></span>
+    </div>
+
+</div>
+
+<div class="mb-3 col-6">
+    <label class="form-label">İndirimli Fiyat</label>
+    <input id="DiscountedPrice" class="form-control" readonly value="@Model.DiscountedPrice" />
+</div>
+
+
+
+<div class="mb-3 col-12">
+    <label class="form-label" asp-for="Description"></label>
+    <textarea class="form-control" asp-for="Description"></textarea>
+    <span asp-validation-for="Description"></span>
+</div>
+
+<div class="mb-3 col-12 col-lg-4">
+    <div class="form-check form-switch">
+        <input type="checkbox" class="form-check-input" asp-for="Enabled" />
+        <label class="form-check-label" asp-for="Enabled"></label>
+    </div>
+</div>

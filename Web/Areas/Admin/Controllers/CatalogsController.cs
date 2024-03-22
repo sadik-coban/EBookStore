@@ -1,11 +1,14 @@
 ﻿using Business.Features.Catalogs;
-using Business.Features.Catalogs.Enums;
 using Core.Entities;
+using Core.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using X.PagedList;
 namespace Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Administrators")]
 public class CatalogsController(ICatalogsService catalogsService) : BaseController
 {
     public async Task<IActionResult> Index(int? pageNumber,string? keywords)
@@ -17,23 +20,23 @@ public class CatalogsController(ICatalogsService catalogsService) : BaseControll
         IPagedList<Catalog> list;
         if(pageNumber == null)
         {
-            list = await catalogsService.GetCatalogListAsync(keywords,orderBy: OrderByCatalog.DateAscending);
+            list = await catalogsService.GetCatalogListAsync(keywords, include: p => p.Include(p => p.User));
         }
         else
         {
-            list = await catalogsService.GetCatalogListAsync(keywords,orderBy: OrderByCatalog.DateAscending, pageNumber: pageNumber!.Value);
+            list = await catalogsService.GetCatalogListAsync(keywords, pageNumber: pageNumber!.Value, include: p => p.Include(p => p.User));
         }
         return View(list);
     }
 
     public IActionResult Create()
     {
-        return View();
+        return View(new CatalogInputModel { Enabled = true});
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Catalog catalog)
+    public async Task<IActionResult> Create(CatalogInputModel catalog)
     {
         if (ModelState.IsValid)
         {
@@ -50,19 +53,20 @@ public class CatalogsController(ICatalogsService catalogsService) : BaseControll
 
     public async Task<IActionResult> Edit(Guid id)
     {
-        return View(await catalogsService.GetCatalogById(id));
+        var catalog = await catalogsService.GetCatalogById(id);
+        return View(new CatalogInputModel { Name = catalog.Name, Enabled = catalog.Enabled});
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Catalog catalog)
+    public async Task<IActionResult> Edit(Guid id,CatalogInputModel catalog)
     {
         if (ModelState.IsValid)
         {
-            var result = await catalogsService.UpdateCatalogAsync(catalog);
+            var result = await catalogsService.UpdateCatalogAsync(catalog,id);
             if (result < 0)
             {
-                ModelState.AddModelError("", "Bu katalog zaten oluşturulmuş");
+                ModelState.AddModelError("", "Güncellemede hata ile karşılaşıldı");
                 return View(catalog);
             }
             return RedirectToAction(nameof(Index));

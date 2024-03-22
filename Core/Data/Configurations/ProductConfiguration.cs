@@ -38,5 +38,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
           .WithOne(p => p.Product)
           .HasForeignKey(p => p.ProductId)
           .OnDelete(DeleteBehavior.Restrict);
+
+        builder
+            .HasMany(p => p.Authors)
+            .WithMany(p => p.Products);
     }
 }

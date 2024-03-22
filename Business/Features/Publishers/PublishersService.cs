@@ -1,25 +1,24 @@
-﻿using Core.Entities;
+﻿using Core.Dtos;
+using Core.Entities;
 using Core.Enums;
 using Core.Extensions;
 using Core.Infrastructure.Base.RepositoriesBase;
 using Core.ViewModels;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using System.Drawing.Printing;
-using System;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using X.PagedList;
-using Core.Dtos;
-using Microsoft.EntityFrameworkCore.Query;
 
-namespace Business.Features.Catalogs;
-public class CatalogsService(IRepositoryBase<Catalog> catalogsRepository) : ICatalogsService
+
+namespace Business.Features.Publishers;
+public class PublishersService(IRepositoryBase<Publisher> publishersRepository) : IPublishersService
 {
-    public async Task<IPagedList<Catalog>> GetCatalogListAsync(string? keywords = null, bool withDeleted = false, bool withDisabled = true, OrderBy orderBy = OrderBy.DateDescending,int pageNumber = 1, int pageSize = 10, Func<IQueryable<Catalog>, IIncludableQueryable<Catalog, object?>>? include = null)
+    public async Task<IPagedList<Publisher>> GetPublisherListAsync(string? keywords = null, bool withDeleted = false, bool withDisabled = true, OrderBy orderBy = OrderBy.DateDescending,int pageNumber = 1, int pageSize = 10, Func<IQueryable<Publisher>, IIncludableQueryable<Publisher, object?>>? include = null)
     {
-        Expression<Func<Catalog, bool>>? predicate = null;
-        Func<IQueryable<Catalog>, IOrderedQueryable<Catalog>>? orderByFunc;
+        Expression<Func<Publisher, bool>>? predicate = null;
+        Func<IQueryable<Publisher>, IOrderedQueryable<Publisher>>? orderByFunc;
 
         switch (orderBy)
         {
@@ -46,7 +45,7 @@ public class CatalogsService(IRepositoryBase<Catalog> catalogsRepository) : ICat
         }
         if(!withDisabled)
         {
-            Expression<Func<Catalog, bool>>? predicateDisabled = p => p.Enabled == true;
+            Expression<Func<Publisher, bool>>? predicateDisabled = p => p.Enabled == true;
             if(predicate == null)
             {
                 predicate = predicateDisabled;
@@ -56,25 +55,25 @@ public class CatalogsService(IRepositoryBase<Catalog> catalogsRepository) : ICat
                 predicate = predicate.AndAlso(predicateDisabled);
             }
         }
-        return await catalogsRepository.GetListAsync(predicate, orderByFunc, include, pageNumber, pageSize, withDeleted);
+        return await publishersRepository.GetListAsync(predicate, orderByFunc, include, pageNumber, pageSize, withDeleted);
     }
-    public async Task<Catalog> GetCatalogById(Guid id, bool withDeleted = false, bool withDisabled = true)
+    public async Task<Publisher> GetPublisherById(Guid id, bool withDeleted = false, bool withDisabled = true)
     {
-        return await catalogsRepository.GetAsync(p => p.Id == id, withDeleted: withDeleted);
+        return await publishersRepository.GetAsync(p => p.Id == id, withDeleted: withDeleted);
     }
-    public async Task<int> CreateCatalogAsync(CatalogInputModel catalogInput,Guid userId)
+    public async Task<int> CreatePublisherAsync(PublisherInputModel publisherInput,Guid userId)
     {
         try
         {
-            var catalog = new Catalog
+            var catalog = new Publisher
             {
-                Name = catalogInput.Name,
-                Enabled = catalogInput.Enabled,
+                Name = publisherInput.Name,
+                Enabled = publisherInput.Enabled,
                 DateCreated = DateTime.UtcNow,
                 UserId = userId,
             };
             // Attempt to save changes to the database
-            var result = await catalogsRepository.CreateAsync(catalog);
+            var result = await publishersRepository.CreateAsync(catalog);
             return result;
         }
         catch (DbUpdateException ex)
@@ -93,23 +92,22 @@ public class CatalogsService(IRepositoryBase<Catalog> catalogsRepository) : ICat
             }
         }   
     }
-    public async Task<int> UpdateCatalogAsync(CatalogInputModel catalogInput, Guid catalogId)
+    public async Task<int> UpdatePublisherAsync(PublisherInputModel publisherInput, Guid publisherId)
     {
-        var result = await catalogsRepository.ExecuteUpdateAsync(p => p.Id == catalogId, s => s.SetProperty(p => p.Name, catalogInput.Name).SetProperty(p => p.Enabled,catalogInput.Enabled));
+        var result = await publishersRepository.ExecuteUpdateAsync(p => p.Id == publisherId, s => s.SetProperty(p => p.Name, publisherInput.Name).SetProperty(p => p.Enabled, publisherInput.Enabled));
         return result;
     }
-    public async Task<int> DeleteCatalogAsync(Guid id)
+    public async Task<int> DeletePublisherAsync(Guid id)
     {
-        var result = await catalogsRepository.ExecuteDeleteAsync(p => p.Id == id);
+        var result = await publishersRepository.ExecuteDeleteAsync(p => p.Id == id);
         return result;
     }
-
     public async Task<ICollection<KeyNameDTO>> GetKeyNameListAsync()
     {
-        return await catalogsRepository.GetListAsync(query => query.Select(p=> new KeyNameDTO
+        return await publishersRepository.GetListAsync(query => query.Select(p => new KeyNameDTO
         {
             Id = p.Id,
             Name = p.Name,
-        }),p => p.Enabled, query => query.OrderBy(p => p.Name), include: null, withDeleted: false);
+        }), p => p.Enabled, query => query.OrderBy(p => p.Name), include: null, withDeleted: false);
     }
 }

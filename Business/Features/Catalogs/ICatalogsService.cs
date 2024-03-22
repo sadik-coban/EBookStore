@@ -1,20 +1,17 @@
-﻿using Business.Features.Catalogs.Enums;
+﻿using Core.Dtos;
 using Core.Entities;
+using Core.Enums;
+using Core.ViewModels;
 using Microsoft.EntityFrameworkCore.Query;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using X.PagedList;
 
 namespace Business.Features.Catalogs;
 public interface ICatalogsService
 {
-    Task<IPagedList<Catalog>> GetCatalogListAsync(string? keywords = null, bool withDeleted = false, bool withDisabled = true, OrderByCatalog orderBy = OrderByCatalog.DateDescending, int pageNumber = 1, int pageSize = 10);
+    Task<IPagedList<Catalog>> GetCatalogListAsync(string? keywords = null, bool withDeleted = false, bool withDisabled = true, OrderBy orderBy = OrderBy.DateDescending, int pageNumber = 1, int pageSize = 10, Func<IQueryable<Catalog>, IIncludableQueryable<Catalog, object?>>? include = null);
     Task<Catalog> GetCatalogById(Guid id, bool withDeleted = false, bool withDisabled = true);
-    Task<int> CreateCatalogAsync(Catalog catalog, Guid userId);
-    Task<int> UpdateCatalogAsync(Catalog catalog);
+    Task<int> CreateCatalogAsync(CatalogInputModel catalogInput, Guid userId);
+    Task<int> UpdateCatalogAsync(CatalogInputModel catalogInput, Guid catalogId);
     Task<int> DeleteCatalogAsync(Guid id);
+    Task<ICollection<KeyNameDTO>> GetKeyNameListAsync();
 }

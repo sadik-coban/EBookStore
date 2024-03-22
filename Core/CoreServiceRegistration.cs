@@ -17,6 +17,7 @@ public static class CoreServiceRegistration
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         services.AddTransient<IEmailSender<ApplicationUser>, EmailSender>();
+        services.AddScoped<IImageService,ImageService>();
         services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
         services.AddMailKit(optionBuilder =>
         {

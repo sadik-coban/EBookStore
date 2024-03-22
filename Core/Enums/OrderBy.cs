@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Business.Features.Catalogs.Enums;
-public enum OrderByCatalog
+namespace Core.Enums;
+public enum OrderBy
 {
     DateAscending,
     DateDescending,
