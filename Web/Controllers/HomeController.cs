@@ -27,6 +27,24 @@ public class HomeController(IProductsService productsService/*, ILogger<HomeCont
         return View(list);
     }
 
+    public async Task<IActionResult> Catalog(Guid id, int? pageNumber)
+    {
+        if (pageNumber <= 0)
+        {
+            pageNumber = 1;
+        }
+        IPagedList<ProductListViewModel> list;
+        if (pageNumber == null)
+        {
+            list = await productsService.GetAllProductsMain(userId: UserId, pageSize: 8, predicate: p => p.Catalogs.Any(q => q.Id == id));
+        }
+        else
+        {
+            list = await productsService.GetAllProductsMain(userId: UserId, pageNumber: pageNumber!.Value, pageSize: 8, predicate: p => p.Catalogs.Any(q => q.Id == id));
+        }
+        return View(list);
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

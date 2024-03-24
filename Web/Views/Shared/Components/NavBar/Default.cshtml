@@ -23,6 +23,11 @@
 }
 <ul class="navbar-nav flex-row align-items-center ms-auto">
     <!-- Place this tag where you want the button to render. -->
+    <li class="nav-item">
+        <a asp-controller="Home" asp-action="Index">
+            <i class="bx bx-home-alt me-2"></i>
+        </a>
+    </li>
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Kataloglar
@@ -38,12 +43,17 @@
 <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 
     <!-- Search -->
-    <div class="navbar-nav align-items-center">
-        <div class="nav-item d-flex align-items-center">
-            <i class="bx bx-search fs-4 lh-0"></i>
-            <input type="text" class="form-control border-0 shadow-none ps-1 ps-sm-2" placeholder="Search..." aria-label="Search...">
+    <form method="get" asp-controller="Home" asp-action="Index">
+        <div class="navbar-nav align-items-center">
+            <div class="nav-item d-flex align-items-center">
+                <button type="submit" class="btn">
+                    <i class="bx bx-search fs-4 lh-0"></i>
+                </button>
+                <input type="text" class="form-control border-0 shadow-none ps-1 ps-sm-2" name="keywords" id="keywords" placeholder="Search..." aria-label="Search..." value="@ViewContext.HttpContext.Request.Query["keywords"]">
+            </div>
         </div>
-    </div>
+    </form>
+
 
     <!-- /Search -->
 

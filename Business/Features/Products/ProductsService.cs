@@ -155,9 +155,8 @@ public class ProductsService(IRepositoryBase<Product> productsRepository, IRepos
         return result;
     }
     
-    public async Task<IPagedList<ProductListViewModel>> GetAllProductsMain(Guid? userId = null,string? keywords = null, bool withDeleted = false, bool withDisabled = false, OrderBy orderBy = OrderBy.DateDescending, int pageNumber = 1, int pageSize = 10, Func<IQueryable<Product>, IIncludableQueryable<Product, object?>>? include = null)
+    public async Task<IPagedList<ProductListViewModel>> GetAllProductsMain(Guid? userId = null,string? keywords = null, bool withDeleted = false, bool withDisabled = false, OrderBy orderBy = OrderBy.DateDescending, int pageNumber = 1, int pageSize = 10, Func<IQueryable<Product>, IIncludableQueryable<Product, object?>>? include = null, Expression<Func<Product, bool>>? predicate = null)
     {
-        Expression<Func<Product, bool>>? predicate = null;
         Func<IQueryable<Product>, IOrderedQueryable<Product>>? orderByFunc;
 
         switch (orderBy)
@@ -181,7 +180,9 @@ public class ProductsService(IRepositoryBase<Product> productsRepository, IRepos
         if (keywords != null)
         {
             var searchKeywords = Regex.Split(keywords.ToLower(), @"\s+").ToList();
-            predicate = p => searchKeywords.Any(q => p.Name.ToLower().Contains(q));
+            Expression<Func<Product, bool>>?  predicateSearch = p => searchKeywords.Any(q => p.Name.ToLower().Contains(q));
+            predicate =  predicate is null ? predicateSearch : predicate.AndAlso(predicateSearch);
+
         }
         if (!withDisabled)
         {

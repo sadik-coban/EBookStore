@@ -32,7 +32,7 @@
                         <div class="card-title text-right fs-4">₺ @product.Price.ToString("n2")</div>
                     }
                     <a asp-action="Publisher" asp-route-id="@product.PublisherId" class="card-title text-muted">@product.PublisherName</a>
-                        <div class="d-flex align-items-center justify-content-center gap-2 mt-auto">
+                    <div class="d-flex align-items-center justify-content-center gap-2 mt-auto">
                         @if (!User.IsInRole("Administrators"))
                         {
                             @if (product.IsInFavorites)

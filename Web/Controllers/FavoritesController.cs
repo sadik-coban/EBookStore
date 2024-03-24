@@ -38,7 +38,7 @@ public class FavoritesController(IFavoritesService favoritesService) : BaseContr
             return Redirect("/Home");
         }
         await favoritesService.AddToFavorites(id, UserId!.Value);
-        return Redirect($"{(returnUrl ?? "/")}#{id}");
+        return Redirect($"{(returnUrl ?? "/")}");
     }
 
     [Authorize]
@@ -49,6 +49,6 @@ public class FavoritesController(IFavoritesService favoritesService) : BaseContr
             return Redirect("/Home");
         }
         await favoritesService.RemoveFromFavorites(id, UserId!.Value);
-        return Redirect($"{(returnUrl ?? "/")}#{id}");
+        return Redirect($"{(returnUrl ?? "/")}");
     }
 }

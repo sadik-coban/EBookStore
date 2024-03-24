@@ -26,5 +26,5 @@ public interface IProductsService
     Task<int> DeleteProductAsync(Guid id);
 
     //Optimised
-    Task<IPagedList<ProductListViewModel>> GetAllProductsMain(Guid? userId = null ,string? keywords = null, bool withDeleted = false, bool withDisabled = false, OrderBy orderBy = OrderBy.DateDescending, int pageNumber = 1, int pageSize = 10, Func<IQueryable<Product>, IIncludableQueryable<Product, object?>>? include = null);
+    Task<IPagedList<ProductListViewModel>> GetAllProductsMain(Guid? userId = null ,string? keywords = null, bool withDeleted = false, bool withDisabled = false, OrderBy orderBy = OrderBy.DateDescending, int pageNumber = 1, int pageSize = 10, Func<IQueryable<Product>, IIncludableQueryable<Product, object?>>? include = null, Expression<Func<Product, bool>>? predicate = null);
 }
