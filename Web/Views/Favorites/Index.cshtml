@@ -1,0 +1,100 @@
+﻿@model IPagedList<ProductListViewModel>
+@{
+    ViewData["Title"] = "Without Menu layout - Layouts";
+    ViewData["navbarHideToggle"] = true;
+    ViewData["isMenu"] = false;
+    ViewData["menuFixed"] = "";
+    Layout = "_ContentNavbarLayout";
+}
+@* ************** Content ************** *@
+@if(Model.Count == 0)
+{
+    <p>
+        Favorilerde ürününüz bulunmamaktadır
+    </p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-4 g-3">
+        @foreach (var product in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <a asp-action="Product" asp-route-id="@product.Id">
+                        <img class="card-img-top" src="@product.Image" alt="@product.Name" onerror="this.onerror=null;this.src = '/images/no-image.jpg'" />
+                    </a>
+                    <div class="card-body d-flex flex-column align-items-start">
+                        <h5 class="card-title">@product.Name</h5>
+
+                        @if (product.DiscountedPrice != product.Price)
+                        {
+                            <div class="card-title text-success fs-4">₺ @product.DiscountedPrice.ToString("n2")</div>
+                            <div class="card-title text-muted text-decoration-line-through">₺ @product.Price.ToString("c2")</div>
+                        }
+                        else
+                        {
+                            <div class="card-title text-right fs-4">₺ @product.Price.ToString("n2")</div>
+                        }
+                        <a asp-action="Publisher" asp-route-id="@product.PublisherId" class="card-title text-muted">@product.PublisherName</a>
+                        <div class="d-flex align-items-center justify-content-center gap-2 mt-auto">
+                            <a class="btn btn-light text-danger" asp-controller="Favorites" asp-action="RemoveFromFavorites" asp-route-id="@product.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.Path">
+                                <i class="bx bxs-heart"></i>
+                            </a>
+
+                            <a class="btn btn-light" asp-controller="Home" asp-action="AddToShoppingCart" asp-route-id="@product.Id">
+                                <i class="bx bx-cart"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+
+
+
+
+    <div class="card mt-3">
+        <div class="d-flex justify-content-center">
+            <div class="col-lg-6">
+                <div class="demo-inline-spacing">
+                    <!-- Basic Pagination -->
+                    <nav aria-label="Page navigation" class="d-flex justify-content-center">
+                        <ul class="pagination">
+                            <li class="page-item first">
+                                <a class="page-link" asp-route-pageNumber="1"><i class="tf-icon bx bx-chevrons-left"></i></a>
+                            </li>
+                            <li class="page-item prev">
+                                <a class="page-link" asp-route-pageNumber="@(Model.PageNumber - 1 <= 0 ? 1 :Model.PageNumber - 1)"><i class="tf-icon bx bx-chevron-left"></i></a>
+                            </li>
+                            @for (int i = 1; i <= Model.PageCount; i++)
+                            {
+                                if (Model.PageNumber == i)
+                                {
+                                    <li class="page-item active">
+                                        <a class="page-link" asp-route-pageNumber="@i">@i</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-route-pageNumber="@i">@i</a>
+                                    </li>
+                                }
+                            }
+                            <li class="page-item next">
+                                <a class="page-link" asp-route-pageNumber="@(Model.PageNumber + 1 > Model.PageCount? Model.PageCount:Model.PageNumber + 1 )"><i class="tf-icon bx bx-chevron-right"></i></a>
+                            </li>
+                            <li class="page-item last">
+                                <a class="page-link" asp-route-pageNumber="@Model.PageCount"><i class="tf-icon bx bx-chevrons-right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <!--/ Basic Pagination -->
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

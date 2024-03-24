@@ -10,7 +10,7 @@ public interface IAccountService
     Task<SignInResult> Login(LoginViewModel model);
     Task Logout();
     Task<IdentityResult> ChangePassword(ChangePasswordViewModel model, ClaimsPrincipal User);
-    Task<IdentityResult> Register(Customer user, string url, string password);
+    Task<IdentityResult> Register(Customer user, string password);
     Task<IdentityResult> ConfirmEmail(Guid id, string token);
     Task<bool> IsEmailAlreadyUsed(string userName);
     Task<IdentityResult> ResetPassword(ApplicationUser user, string url);

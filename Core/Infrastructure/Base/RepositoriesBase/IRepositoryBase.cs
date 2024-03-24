@@ -75,4 +75,6 @@ public interface IRepositoryBase<TEntity>
         bool withDeleted = false,
         CancellationToken cancellationToken = default,
         bool asNoTracking = true);
+
+    Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null);
 }

@@ -1,25 +1,30 @@
+using Business.Features.Products;
+using Core.Entities;
+using Core.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Web.Models;
+using X.PagedList;
 
 namespace Web.Controllers;
-public class HomeController : Controller
+public class HomeController(IProductsService productsService/*, ILogger<HomeController> _logger*/) : BaseController
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    public async Task<IActionResult> Index(int? pageNumber, string? keywords)
     {
-        _logger = logger;
-    }
-
-    public IActionResult Index()
-    {
-        return View();
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
+        if (pageNumber <= 0)
+        {
+            pageNumber = 1;
+        }
+        IPagedList<ProductListViewModel> list;
+        if (pageNumber == null)
+        {
+            list = await productsService.GetAllProductsMain(userId: UserId,keywords:keywords, pageSize: 8);
+        }
+        else
+        {
+            list = await productsService.GetAllProductsMain(userId: UserId,keywords:keywords, pageNumber: pageNumber!.Value, pageSize: 8);
+        }
+        return View(list);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

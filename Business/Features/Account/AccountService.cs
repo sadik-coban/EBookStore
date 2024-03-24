@@ -30,7 +30,7 @@ public class AccountService(SignInManager<ApplicationUser> signInManager,
         return result;
     }
 
-    public async Task<IdentityResult> Register(Customer user, string url, string password)
+    public async Task<IdentityResult> Register(Customer user, string password)
     {
         var result = await userManager.CreateAsync(user, password);
         if (result.Succeeded)
@@ -43,7 +43,6 @@ public class AccountService(SignInManager<ApplicationUser> signInManager,
             await userManager.AddToRoleAsync(user, "Members");
             await userManager.AddClaimsAsync(user, claims);
 
-            await emailService.SendConfirmationLinkAsync(user,user.Email,url);
             return result;
         }
         else

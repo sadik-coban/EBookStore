@@ -1,6 +1,7 @@
 ﻿using Business.Features.Account;
 using Business.Features.Authors;
 using Business.Features.Catalogs;
+using Business.Features.Favorites;
 using Business.Features.Products;
 using Business.Features.Publishers;
 using Core.Entities;
@@ -23,6 +24,11 @@ public static class BusinessServiceRegistration
 
         services.AddScoped<IRepositoryBase<Product>, RepositoryBase<Product>>();
         services.AddScoped<IProductsService, ProductsService>();
+
+        services.AddScoped<IRepositoryBase<Favorite>, RepositoryBase<Favorite>>();
+        services.AddScoped<IFavoritesService, FavoritesService>();
+
+        services.AddScoped<IRepositoryBase<Customer>, RepositoryBase<Customer>>();
 
         services.AddScoped<IAccountService, AccountService>();
         return services;

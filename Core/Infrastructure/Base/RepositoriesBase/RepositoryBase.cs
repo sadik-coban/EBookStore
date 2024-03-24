@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using X.PagedList;
 
 namespace Core.Infrastructure.Base.RepositoriesBase;
-public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepositoryBase<TEntity> where TEntity : AuditableEntity
+public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepositoryBase<TEntity> where TEntity : class
 {
     protected IQueryable<TEntity> Query => context.Set<TEntity>();
 
@@ -180,6 +180,12 @@ public class RepositoryBase<TEntity>(ApplicationDbContext context) : IRepository
         query = query.Where(predicate);
         TResult result = await ((IQueryable<TResult>)query.Select(selector)).FirstOrDefaultAsync() ?? throw new ArgumentNullException(nameof(result), $"The {nameof(TEntity).ToLower()} does not exists");
         return result;
+    }
+
+    public async Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null)
+    {
+        var query = Query;
+        return await query.CountAsync(predicate);
     }
     private IQueryable<TEntity> GetBase(Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object?>>? include, bool withDeleted, IQueryable<TEntity> query)
     {

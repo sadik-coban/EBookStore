@@ -1,5 +1,8 @@
 ﻿using Business.Features.Account;
+using Business.Features.Favorites;
+using Business.Features.Products;
 using Core.Entities;
+using Core.Infrastructure.Authentication;
 using Core.Services;
 using Core.Services.Abstract;
 using Core.ViewModels;
@@ -12,7 +15,7 @@ using NuGet.Common;
 using System.Security.Claims;
 
 namespace Web.Controllers;
-public class AccountController(IAccountService accountService, ITokenService tokenService) : BaseController
+public class AccountController(IAccountService accountService, ITokenService tokenService, Core.Services.Abstract.IEmailSender<ApplicationUser> emailService) : BaseController
 {
     public IActionResult AccessDenied()
     {
@@ -79,12 +82,17 @@ public class AccountController(IAccountService accountService, ITokenService tok
             Name = model.Name,
             Email = model.UserName
         };
+       
+
+        var result = await accountService.Register(user, model.Password);
+
         var token = await tokenService.GenerateEmailConfirmationTokenAsync(user);
 
         var url = Url.Action(nameof(ConfirmEmail), "Account", new { id = user.Id, token }, Request.Scheme);
 
-        var result = await accountService.Register(user, url, model.Password);
-        if(result.Succeeded)
+        await emailService.SendConfirmationLinkAsync(user, user.Email, url);
+
+        if (result.Succeeded)
         {
             return View("RegisterSuccess");
         }
@@ -135,6 +143,5 @@ public class AccountController(IAccountService accountService, ITokenService tok
         await accountService.CreateNewPassword(model);
         return RedirectToAction(nameof(Login));
     }
-
 }
 

@@ -154,4 +154,58 @@ public class ProductsService(IRepositoryBase<Product> productsRepository, IRepos
         var result = await productsRepository.ExecuteDeleteAsync(p => p.Id == id);
         return result;
     }
+    
+    public async Task<IPagedList<ProductListViewModel>> GetAllProductsMain(Guid? userId = null,string? keywords = null, bool withDeleted = false, bool withDisabled = false, OrderBy orderBy = OrderBy.DateDescending, int pageNumber = 1, int pageSize = 10, Func<IQueryable<Product>, IIncludableQueryable<Product, object?>>? include = null)
+    {
+        Expression<Func<Product, bool>>? predicate = null;
+        Func<IQueryable<Product>, IOrderedQueryable<Product>>? orderByFunc;
+
+        switch (orderBy)
+        {
+            case OrderBy.DateAscending:
+                orderByFunc = query => query.OrderBy(p => p.DateCreated);
+                break;
+            case OrderBy.DateDescending:
+                orderByFunc = query => query.OrderByDescending(p => p.DateCreated);
+                break;
+            case OrderBy.NameAscending:
+                orderByFunc = query => query.OrderBy(p => p.Name);
+                break;
+            case OrderBy.NameDescending:
+                orderByFunc = query => query.OrderByDescending(p => p.Name);
+                break;
+            default:
+                orderByFunc = query => query.OrderByDescending(p => p.DateCreated);
+                break;
+        }
+        if (keywords != null)
+        {
+            var searchKeywords = Regex.Split(keywords.ToLower(), @"\s+").ToList();
+            predicate = p => searchKeywords.Any(q => p.Name.ToLower().Contains(q));
+        }
+        if (!withDisabled)
+        {
+            Expression<Func<Product, bool>>? predicateDisabled = p => p.Enabled == true;
+            if (predicate == null)
+            {
+                predicate = predicateDisabled;
+            }
+            else
+            {
+                predicate = predicate.AndAlso(predicateDisabled);
+            }
+        }
+
+        return await productsRepository.GetListAsync(query => query.Select(p => new ProductListViewModel
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Price = p.Price,
+            Image = p.Image,
+            DiscountedPrice = p.DiscountedPrice,
+            PublisherId = p.Publisher.Id,
+            PublisherName = p.Publisher.Name,
+            IsInFavorites = p.Favorites.Any(r => r.Customer.Id == userId),
+        }),predicate, orderByFunc, include, pageNumber, pageSize, withDeleted);
+    }
 }
