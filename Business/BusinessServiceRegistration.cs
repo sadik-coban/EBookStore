@@ -1,6 +1,7 @@
 ﻿using Business.Features.Account;
 using Business.Features.Authors;
 using Business.Features.Catalogs;
+using Business.Features.Comments;
 using Business.Features.Favorites;
 using Business.Features.Products;
 using Business.Features.Publishers;
@@ -28,9 +29,13 @@ public static class BusinessServiceRegistration
         services.AddScoped<IRepositoryBase<Favorite>, RepositoryBase<Favorite>>();
         services.AddScoped<IFavoritesService, FavoritesService>();
 
+        services.AddScoped<IRepositoryBase<Comment>, RepositoryBase<Comment>>();
+        services.AddScoped<ICommentsService, CommentsService>();
+
         services.AddScoped<IRepositoryBase<Customer>, RepositoryBase<Customer>>();
 
         services.AddScoped<IAccountService, AccountService>();
+
         return services;
     }
 }

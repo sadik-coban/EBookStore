@@ -1,4 +1,5 @@
 ﻿using Core.Data;
+using Core.Dtos;
 using Core.Entities;
 using Core.Enums;
 using Core.Extensions;
@@ -209,4 +210,27 @@ public class ProductsService(IRepositoryBase<Product> productsRepository, IRepos
             IsInFavorites = p.Favorites.Any(r => r.Customer.Id == userId),
         }),predicate, orderByFunc, include, pageNumber, pageSize, withDeleted);
     }
+
+    public async Task<ProductDetailViewModel> GetProductByIdMain(Guid id, Guid userId)
+    {
+        return await productsRepository.GetAsync(p => p.Id == id, query => query.Select(p => new ProductDetailViewModel
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Price = p.Price,
+            Image = p.Image,
+            DiscountedPrice = p.DiscountedPrice,
+            DiscountRate = p.DiscountRate,
+            PublisherId = p.Publisher.Id,
+            PublisherName = p.Publisher.Name,
+            Description = p.Description,
+            Catalogs = p.Catalogs.Select(q => new KeyNameDTO { Id = q.Id, Name = q.Name }),
+            Authors = p.Authors.Select(q => new KeyNameDTO { Id = q.Id, Name = q.Name }),
+            Comments = p.Comments.OrderByDescending(p => p.DateCreated).Where(p => p.Enabled || p.User.Id == userId).Select(q => new CommentDTO { Id = q.Id, Body = q.Body, Date = q.DateCreated, Rate = q.Rate, UserName = q.User.Name }),
+            IsInFavorites = p.Favorites.Any(q => q.Customer.Id == userId)
+        }), withDeleted: false, include: null);
+    }
 }
+
+
+
