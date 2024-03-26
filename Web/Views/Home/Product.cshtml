@@ -11,7 +11,7 @@
 <div class="row">
     <div class="col-12 col-lg-5 d-flex flex-column gap-2">
         <a href="@Model.Image" data-lightbox="productImage">
-            <img src="@Model.Image" class="img-fluid object-fit-cover" />
+            <img src="@Model.Image" class="img-fluid object-fit-cover" alt="@Model.Name" onerror="this.onerror=null;this.src = '/images/no-image.jpg'" />
         </a>
     </div>
     <div class="col-12 col-lg-7 d-flex flex-column gap-2">
@@ -32,53 +32,72 @@
                     <div class="fs-2 text-success">₺@Model.DiscountedPrice.ToString("n2")</div>
                     <div class="badge bg-danger">%@Model.DiscountRate.ToString("n0")</div>
                 </div>
-
             }
-        </div>
-        <div class="d-flex gap-2">
-            @if (!Model.IsInFavorites)
+            else
             {
-                <a class="btn btn-outline-primary" asp-controller="Account" asp-action="AddToFavorites" asp-route-id="@Model.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.Path">
-                    <i class="bi bi-heart"></i> Favorilere Ekle
-                </a>
-            }
-            <form asp-action="AddToShoppingCart" method="get">
-                <input type="hidden" name="id" value="@Model.Id" />
-                <div class="d-flex">
-                    <button id="decrement" type="button" class="btn btn-outline-secondary">-</button>
-                    <input type="text" required pattern="^[0-9]+$" inputmode="numeric" class="form-control text-center" style="width:40px;" id="quantity" name="quantity" value="1" />
-                    <button id="increment" type="button" class="btn btn-outline-secondary">+</button>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-cart"></i> Sepete Ekle</button>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="fs-2 text-secondary">₺@Model.Price.ToString("n2")</div>
                 </div>
-            </form>
+            }
         </div>
+        @if(!User.IsInRole("Administrators")) {
+            <div class="d-flex gap-2 flex-column">
+                @if (!Model.IsInFavorites)
+                {
+                    <a class="btn btn-outline-primary d-flex gap-2 align-items-center w-50" asp-controller="Favorites" asp-action="AddToFavorites" asp-route-id="@Model.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.Path">
+                        <i class="bx bxs-heart"></i>  Favorilere Ekle
+                    </a>
+                }
+                else
+                {
+                    <a class="btn btn-outline-primary d-flex gap-2 align-items-center" asp-controller="Favorites" asp-action="RemoveFromFavorites" asp-route-id="@Model.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.Path">
+                        <i class="bx bx-heart"></i> Favorilerden Çıkar
+                    </a>
+                }
+                <form asp-action="AddToShoppingCart" method="get">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="d-flex gap-3">
+                        <div class="d-flex gap-1">
+                            <button id="decrement" type="button" class="btn btn-outline-secondary">-</button>
+                            <input type="text" required pattern="^[0-9]+$" inputmode="numeric" class="form-control text-center" style="width:40px;" id="quantity" name="quantity" value="1" />
+                            <button id="increment" type="button" class="btn btn-outline-secondary">+</button>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-cart"></i> Sepete Ekle</button>
+                    </div>
+                </form>
+            </div>
+
+        }
     </div>
 </div>
 
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="desc-tab" data-bs-toggle="tab" data-bs-target="#desc-tab-pane" type="button" role="tab" aria-controls="desc-tab-pane" aria-selected="true">
-            <i class="bi bi-justify"></i>
+
+<div>
+    <div class="card p-4 mt-5 mb-3">
+        <div class="d-flex gap-2 align-items-center">
+            <i class="bx bx-align-left"></i>
             Açıklamalar
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments-tab-pane" type="button" role="tab" aria-controls="comments-tab-pane" aria-selected="false">
-            <i class="bi bi-chat"></i>
-            Yorumlar
-        </button>
-    </li>
-</ul>
-<div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="desc-tab-pane" role="tabpanel" aria-labelledby="desc-tab" tabindex="0">
-        <blockquote class="p-4">
-            @Model.Description
-        </blockquote>
+        </div>
+
+        <div>
+            <blockquote class="p-4">
+                @Model.Description
+            </blockquote>
+        </div>
     </div>
-    <div class="tab-pane fade" id="comments-tab-pane" role="tabpanel" aria-labelledby="comments-tab" tabindex="0">
+
         <div class="p-4 border">
-            <partial name="_CommentFormPartial" model="@(new CommentViewModel { ProductId = Model.Id, Rating = 0, SelectList = ViewBag.Rating })" />
-            <hr />
+        <div class="d-flex gap-2 align-items-center mb-3">
+            <i class="bx bx-comment"></i>
+            Yorumlar
+            </div>
+
+        <div>
+            @if (!User.IsInRole("Administrators"))
+            {
+                <partial name="_CommentFormPartial" model="@(new CommentViewModel { ProductId = Model.Id, Rating = 0, SelectList = ViewBag.Rating })" />
+                <hr />
+            }
             @foreach (var comment in Model.Comments)
             {
                 <div class="border p-4 text-bg-light rounded d-flex flex-column gap-2 mb-2">
@@ -98,11 +117,17 @@
                         }
                     </div>
                     <div>@((comment.Date as DateTime?).Value.ToLocalTime().ToShortDateString()) - @((comment.Date as DateTime?).Value.ToLocalTime().ToShortTimeString()) </div>
+                    @if(User.IsInRole("Administrators") && !comment.Enabled)
+                    {
+                        <a asp-action="EnableComment" asp-route-id="@comment.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.Path">Yorumu aktif et</a>
+                    }
                 </div>
             }
         </div>
     </div>
 </div>
+
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

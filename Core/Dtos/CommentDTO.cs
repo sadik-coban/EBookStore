@@ -12,4 +12,5 @@ public class CommentDTO
     public string Body { get; set; } = string.Empty;
     public DateTime Date { get; set; }
     public string UserName {  get; set; } = string.Empty;
+    public bool Enabled { get; set; }
 }

@@ -27,5 +27,5 @@ public interface IProductsService
 
     //Optimised
     Task<IPagedList<ProductListViewModel>> GetAllProductsMain(Guid? userId = null ,string? keywords = null, bool withDeleted = false, bool withDisabled = false, OrderBy orderBy = OrderBy.DateDescending, int pageNumber = 1, int pageSize = 10, Func<IQueryable<Product>, IIncludableQueryable<Product, object?>>? include = null, Expression<Func<Product, bool>>? predicate = null);
-    Task<ProductDetailViewModel> GetProductByIdMain(Guid id, Guid userId);
+    Task<ProductDetailViewModel> GetProductByIdMain(Guid id, Guid userId, bool isAdmin);
 }

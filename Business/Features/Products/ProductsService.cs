@@ -211,7 +211,7 @@ public class ProductsService(IRepositoryBase<Product> productsRepository, IRepos
         }),predicate, orderByFunc, include, pageNumber, pageSize, withDeleted);
     }
 
-    public async Task<ProductDetailViewModel> GetProductByIdMain(Guid id, Guid userId)
+    public async Task<ProductDetailViewModel> GetProductByIdMain(Guid id, Guid userId, bool isAdmin)
     {
         return await productsRepository.GetAsync(p => p.Id == id, query => query.Select(p => new ProductDetailViewModel
         {
@@ -226,7 +226,11 @@ public class ProductsService(IRepositoryBase<Product> productsRepository, IRepos
             Description = p.Description,
             Catalogs = p.Catalogs.Select(q => new KeyNameDTO { Id = q.Id, Name = q.Name }),
             Authors = p.Authors.Select(q => new KeyNameDTO { Id = q.Id, Name = q.Name }),
-            Comments = p.Comments.OrderByDescending(p => p.DateCreated).Where(p => p.Enabled || p.User.Id == userId).Select(q => new CommentDTO { Id = q.Id, Body = q.Body, Date = q.DateCreated, Rate = q.Rate, UserName = q.User.Name }),
+            Comments = isAdmin ?
+            p.Comments.OrderByDescending(p => p.DateCreated)
+            .Select(q => new CommentDTO { Id = q.Id, Body = q.Body, Date = q.DateCreated, Rate = q.Rate, UserName = q.User.Name, Enabled = q.Enabled }): 
+            p.Comments.OrderByDescending(p => p.DateCreated).Where(p => p.Enabled || p.User.Id == userId)
+            .Select(q => new CommentDTO { Id = q.Id, Body = q.Body, Date = q.DateCreated, Rate = q.Rate, UserName = q.User.Name, Enabled = q.Enabled }),
             IsInFavorites = p.Favorites.Any(q => q.Customer.Id == userId)
         }), withDeleted: false, include: null);
     }

@@ -8,4 +8,5 @@ namespace Business.Features.Comments;
 public interface ICommentsService
 {
     Task CreateCommentAsync(Guid productId, Guid userId, string text, int rate);
+    Task<int> EnableCommentAsync(Guid commentId);
 }

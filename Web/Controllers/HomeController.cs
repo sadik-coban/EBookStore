@@ -62,7 +62,7 @@ public class HomeController(IProductsService productsService, ICommentsService c
 
         // Store the list in ViewBag
         ViewBag.Rating = new SelectList(numbers, "Value", "Text");
-        var product = await productsService.GetProductByIdMain(id,UserId!.Value);
+        var product = await productsService.GetProductByIdMain(id,UserId!.Value, User.IsInRole("Administrators"));
         return View(product);
     }
 
@@ -71,6 +71,12 @@ public class HomeController(IProductsService productsService, ICommentsService c
     {
         await commentsService.CreateCommentAsync(model.ProductId, UserId!.Value, model.Body, model.Rating);
         return RedirectToAction(nameof(Product), new { id = model.ProductId });
+    }
+    [Authorize(Roles = "Administrators")]
+    public async Task<IActionResult> EnableComment(Guid id,string? returnUrl)
+    {
+        await commentsService.EnableCommentAsync(id);
+        return Redirect($"{(returnUrl ?? "/")}");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

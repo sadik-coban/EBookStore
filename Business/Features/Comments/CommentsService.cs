@@ -23,4 +23,9 @@ public class CommentsService(IRepositoryBase<Comment> commentsRepository) : ICom
 
         await commentsRepository.CreateAsync(comment);
     }
+
+    public async Task<int> EnableCommentAsync(Guid commentId)
+    {
+        return await commentsRepository.ExecuteUpdateAsync(p => p.Id == commentId, s => s.SetProperty(p => p.Enabled, true));
+    }
 }
