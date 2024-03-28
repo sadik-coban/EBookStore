@@ -6,15 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using X.PagedList;
 
 namespace Web.Controllers;
+
+[Authorize(Roles = "Members")]
 public class FavoritesController(IFavoritesService favoritesService) : BaseController
 {
-    [Authorize]
     public async Task<IActionResult> Index(int? pageNumber)
     {
-        if (User.IsInRole("Administrators"))
-        {
-            return Redirect("/Home");
-        }
         if (pageNumber <= 0)
         {
             pageNumber = 1;
@@ -30,24 +27,15 @@ public class FavoritesController(IFavoritesService favoritesService) : BaseContr
         }
         return View(list);
     }
-    [Authorize]
+
     public async Task<IActionResult> AddToFavorites(Guid id, string? returnUrl)
     {
-        if(User.IsInRole("Administrators"))
-        {
-            return Redirect("/Home");
-        }
         await favoritesService.AddToFavorites(id, UserId!.Value);
         return Redirect($"{(returnUrl ?? "/")}");
     }
 
-    [Authorize]
     public async Task<IActionResult> RemoveFromFavorites(Guid id, string? returnUrl)
     {
-        if (User.IsInRole("Administrators"))
-        {
-            return Redirect("/Home");
-        }
         await favoritesService.RemoveFromFavorites(id, UserId!.Value);
         return Redirect($"{(returnUrl ?? "/")}");
     }

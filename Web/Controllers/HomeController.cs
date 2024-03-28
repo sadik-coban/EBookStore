@@ -67,13 +67,9 @@ public class HomeController(IProductsService productsService, ICommentsService c
         return View(product);
     }
 
-    [Authorize]
+    [Authorize(Roles = "Members")]
     public async Task<IActionResult> AddComment(CommentViewModel model)
     {
-        if (User.IsInRole("Administrators"))
-        {
-            return Redirect("/Home");
-        }
         await commentsService.CreateCommentAsync(model.ProductId, UserId!.Value, model.Body, model.Rating);
         return RedirectToAction(nameof(Product), new { id = model.ProductId });
     }
@@ -89,23 +85,15 @@ public class HomeController(IProductsService productsService, ICommentsService c
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
-    [Authorize]
+    [Authorize(Roles = "Members")]
     public async Task<IActionResult> Orders()
     {
-        if (User.IsInRole("Administrators"))
-        {
-            return Redirect("/Home");
-        }
         var orders = await ordersService.GetAllOrdersMain(UserId!.Value);
         return View(orders);
     }
-    [Authorize]
+    [Authorize(Roles = "Members")]
     public async Task<IActionResult> CancelOrder(Guid id)
     {
-        if (User.IsInRole("Administrators"))
-        {
-            return Redirect("/Home");
-        }
         var result = await ordersService.CancelOrder(id);
         if (result < 0)
         {

@@ -6,15 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Members")]
 public class AddressesController(IAddressesService addressesService) : BaseController
 {
     public async Task<IActionResult> Index()
     {
-        if (User.IsInRole("Administrators"))
-        {
-            return Redirect("/Home");
-        }
         return View(await addressesService.GetAllCustomerAddressesMain(UserId!.Value));
     }
 
