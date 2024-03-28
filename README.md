@@ -1,4 +1,5 @@
 # EBookStore
+## A book store with an admin panel
 In this project I used mailtrap for smtp server. If you don't want to use mailtrap you can directly use customer credentials below.
 
 Email = user@mail.com,
@@ -21,6 +22,8 @@ For Mailtrap modify appsettings.json
     "SSL": true
   },
   other settings in appsettings.json and appsetting.Development.json too
+
+  Admin Panel from : https://themeselection.com/item/sneat-free-aspnet-core-mvc-admin-template/
 
 This is my final project for my course. I used 3-tier architecture. Core is the layer for infrastructure persistence domain and response entites,
 Bussiness layer responsible for application flow, Controller and Razor engines layer (Web layer) responsible for controlling url, website inputs etc.
