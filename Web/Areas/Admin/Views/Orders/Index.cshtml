@@ -1,0 +1,126 @@
+﻿@model ICollection<OrderViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Siparişler";
+}
+
+<h2>Siparişler</h2>
+@foreach (var item in Model.Select((order, i) => new { i, order }))
+{
+    var order = item.order;
+    var index = item.i;
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item mb-2">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@index" aria-expanded="true" aria-controls="collapse-@index">
+                    <div class="p-2">
+                        <div>
+                            Sipariş Tarihi: @order.DateCreated.ToLocalTime().Date.ToShortDateString() |
+                            Adres: @order.Address.Name - @order.Address.Text 
+                            @(order.Status == Core.Enums.DeliveryStatus.OnDelivery ? $"Sipariş Takip Numarası: {order.CargoTrackingNumber}" : "")
+
+                        </div>
+                    </div>
+                </button>
+            </h2>
+            <div id="collapse-@index" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <table class="table">
+                        <colgroup>
+                            <col width="120" />
+                            <col />
+                            <col />
+                            <col width="40" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>
+                                    Görsel
+                                </th>
+                                <th>
+                                    Ürün Adı
+                                </th>
+                                <th>
+                                    Fiyat
+                                </th>
+                                <th>
+                                    Miktar
+                                </th>
+                                <th>
+                                    Tutar
+                                </th>
+                            </tr>
+                        </thead>
+
+                        @foreach (var orderDetail in order.OrderDetails)
+                        {
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <a asp-controller="Home" asp-action="Product" asp-route-id="@orderDetail.Product.Id">
+                                            <img src="@orderDetail.Product!.Image" class="img-fluid object-fit-contain" onerror="this.onerror=null;this.src = '/images/no-image.jpg'" />
+                                        </a>
+                                    </td>
+                                    <td>
+                                        @orderDetail.Product.Name
+                                    </td>
+                                    <td class="text-end font-monospace">
+                                        ₺@orderDetail.Product.DiscountedPrice.ToString("N2")
+                                        <div class="small text-decoration-line-through text-muted">
+                                            ₺@orderDetail.Product.Price.ToString("N2")
+                                        </div>
+                                    </td>
+                                    <td class="text-end font-monospace">
+                                        <div class="d-flex align-items-center">
+                                            @orderDetail.Quantity.ToString("n0")
+                                        </div>
+
+                                    </td>
+                                    <td class="text-end font-monospace">
+                                        ₺ @orderDetail.LineTotal.ToString("N2")
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        }
+                    </table>
+                </div>
+            </div>
+            <div class="ps-4 py-1">
+                Sipariş Durumu:
+                @switch (order.Status)
+                {
+                    case Core.Enums.DeliveryStatus.New:
+                        <span>Sipariş Alındı</span>
+                        <span>|</span>
+                        break;
+                    case Core.Enums.DeliveryStatus.OnDelivery:
+                        <span>Sipariş Yolda</span>
+                        <span>|</span>
+                        break;
+                    case Core.Enums.DeliveryStatus.Shipped:
+                        <span>Sipariş Teslim Edildi</span>
+                        break;
+                    case Core.Enums.DeliveryStatus.Cancelled:
+                        <span>Sipariş İptal Edildi</span>
+                        break;
+                }
+                @switch (order.Status)
+                {
+                    case Core.Enums.DeliveryStatus.New:
+                        <a asp-controller="Orders" asp-action="UpdateStatusToOnDelivery" asp-route-id="@order.Id">Siparişi Yola Çıkar</a>
+                        break;
+                    case Core.Enums.DeliveryStatus.OnDelivery:
+                        <a asp-controller="Orders" asp-action="UpdateStatusToShipped" asp-route-id="@order.Id">Sipariş Teslim Et</a>
+                        break;
+                    case Core.Enums.DeliveryStatus.Shipped:
+                        break;
+                    case Core.Enums.DeliveryStatus.Cancelled:
+                        break;
+                }
+            </div>
+        </div>
+    </div>
+}

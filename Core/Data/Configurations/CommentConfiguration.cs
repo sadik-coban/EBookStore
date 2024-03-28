@@ -15,10 +15,5 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
         builder
             .Property(p => p.DateCreated)
             .HasColumnType("smalldatetime");
-
-        builder
-            .HasMany(p => p.CommentImages)
-            .WithOne(p => p.Comment)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

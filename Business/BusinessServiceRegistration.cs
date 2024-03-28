@@ -1,8 +1,11 @@
 ﻿using Business.Features.Account;
+using Business.Features.Addresses;
 using Business.Features.Authors;
 using Business.Features.Catalogs;
+using Business.Features.Checkout;
 using Business.Features.Comments;
 using Business.Features.Favorites;
+using Business.Features.Orders;
 using Business.Features.Products;
 using Business.Features.Publishers;
 using Core.Entities;
@@ -31,6 +34,15 @@ public static class BusinessServiceRegistration
 
         services.AddScoped<IRepositoryBase<Comment>, RepositoryBase<Comment>>();
         services.AddScoped<ICommentsService, CommentsService>();
+
+        services.AddScoped<IRepositoryBase<CustomerAddress>, RepositoryBase<CustomerAddress>>();
+        services.AddScoped<IAddressesService, AddressesService>();
+
+        services.AddScoped<IRepositoryBase<ShoppingCartItem>, RepositoryBase<ShoppingCartItem>>();
+        services.AddScoped<ICheckoutService, CheckoutService>();
+
+        services.AddScoped<IRepositoryBase<Order>, RepositoryBase<Order>>();
+        services.AddScoped<IOrdersService, OrdersService>();
 
         services.AddScoped<IRepositoryBase<Customer>, RepositoryBase<Customer>>();
 

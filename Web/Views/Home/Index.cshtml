@@ -48,7 +48,7 @@
                                 </a>
                             }
 
-                            <a class="btn btn-light" asp-controller="Home" asp-action="AddToShoppingCart" asp-route-id="@product.Id">
+                            <a class="btn btn-light" asp-controller="Checkout" asp-action="AddToShoppingCart" asp-route-id="@product.Id" asp-route-returnUrl="@returnValue">
                                 <i class="bx bx-cart"></i>
                             </a>
                         }

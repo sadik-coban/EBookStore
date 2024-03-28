@@ -9,7 +9,7 @@ namespace Web.Controllers;
 public class FavoritesController(IFavoritesService favoritesService) : BaseController
 {
     [Authorize]
-    public async Task<IActionResult> Index(int? pageNumber, string? keywords)
+    public async Task<IActionResult> Index(int? pageNumber)
     {
         if (User.IsInRole("Administrators"))
         {

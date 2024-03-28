@@ -106,6 +106,24 @@
                             <span class="align-middle">Favoriler</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="dropdown-item" asp-controller="Addresses" asp-action="Index">
+                            <i class="bx bxs-location-plus me-2"></i>
+                            <span class="align-middle">Adresler</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-controller="Checkout" asp-action="Index">
+                            <i class="bx bx-basket me-2"></i>
+                            <span class="align-middle">Sepet</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-controller="Home" asp-action="Orders">
+                            <i class="bx bx-clipboard me-2"></i>
+                            <span class="align-middle">Siparişler</span>
+                        </a>
+                    </li>
                 }
 
                 @if (User.Identity.IsAuthenticated)

@@ -5,10 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Enums;
-public enum OrderBy : byte
+public enum DeliveryStatus : byte
 {
-    DateAscending,
-    DateDescending,
-    NameAscending,
-    NameDescending,
+    New, OnDelivery, Shipped, Cancelled
 }

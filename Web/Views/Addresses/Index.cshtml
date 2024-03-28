@@ -1,0 +1,55 @@
+﻿@model ICollection<AddressViewModel>
+@{
+    ViewData["Title"] = "Adresler";
+    ViewData["navbarHideToggle"] = true;
+    ViewData["isMenu"] = false;
+    ViewData["menuFixed"] = "";
+    Layout = "_ContentNavbarLayout";
+}
+
+@* ************** Content ************** *@
+<h4 class="py-3 mb-4">
+    <span class="text-muted fw-light">Adresler /</span>
+</h4>
+
+<!-- Basic Bootstrap Table -->
+<div class="card">
+    <div class="d-flex justify-content-between">
+        <h5 class="card-header">Adresler</h5>
+        <a type="button" class="btn btn-primary m-3" asp-action="Create">Ekle</a>
+    </div>
+    <div class="table-responsive text-nowrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Adı</th>
+                    <th>Tam Adres</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>@item.Text</td>
+                        <td>
+                            <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id"><i class="bx bx-edit-alt me-1"></i> Düzenle</a>
+                                    <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id"><i class="bx bx-trash me-1"></i> Sil</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                
+            </tbody>
+        </table>
+        
+    </div>
+</div>
+
+
+

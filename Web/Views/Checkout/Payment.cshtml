@@ -1,0 +1,37 @@
+﻿@model PaymentViewModel
+@{
+    ViewData["Title"] = "Ödeme";
+    ViewData["navbarHideToggle"] = true;
+    ViewData["isMenu"] = false;
+    ViewData["menuFixed"] = "";
+    Layout = "_ContentNavbarLayout";
+}
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form asp-action="Payment">
+            <div class="mb-3">
+                <label class="form-check-label" asp-for="FullName"></label>
+                <input type="text" class="form-control" asp-for="FullName" />
+                <span asp-validation-for="FullName"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-check-label" asp-for="CreditCardNumber"></label>
+                <input type="text" class="form-control" placeholder="5555555555554444" asp-for="CreditCardNumber" />
+                <span asp-validation-for="CreditCardNumber"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-check-label" asp-for="CVV"></label>
+                <input type="text" class="form-control" placeholder="123" asp-for="CVV" />
+                <span asp-validation-for="CVV"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="AddressId" class="control-label"></label>
+                <select asp-for="AddressId" class="form-control" asp-items="ViewBag.Addresses"></select>
+                <span asp-validation-for="AddressId" class="text-danger"></span>
+            </div>
+            <hr />
+            <button type="submit" class="btn btn-primary">Gönder</button>
+        </form>
+    </div>
+</div>

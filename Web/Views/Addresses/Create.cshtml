@@ -1,0 +1,27 @@
+﻿@model AddressInputModel
+@{
+    ViewData["Title"] = "Yeni Adres";
+    ViewData["navbarHideToggle"] = true;
+    ViewData["isMenu"] = false;
+    ViewData["menuFixed"] = "";
+    Layout = "_ContentNavbarLayout";
+}
+
+@* ************** Content ************** *@
+<h4 class="py-3 mb-4">
+    <span class="text-muted fw-light">Adresler /</span> Yeni Adres Ekle
+</h4>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form asp-action="Create">
+            <partial name="_FieldsPartial" model="Model" />
+            <hr />
+            <button type="submit" class="btn btn-primary">Gönder</button>
+        </form>
+    </div>
+</div>
+
+@section scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

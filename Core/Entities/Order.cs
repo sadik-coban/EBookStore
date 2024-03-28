@@ -1,4 +1,5 @@
-﻿using Core.Infrastructure.Base.EntitiesBase;
+﻿using Core.Enums;
+using Core.Infrastructure.Base.EntitiesBase;
 using Core.Infrastructure.Base.EntitiesBase.Abstract;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,13 @@ namespace Core.Entities;
 public class Order : Entity, IAuditableEntity
 {
     public Guid CustomerId { get; set; }
+    public Guid CustomerAddressId { get; set; }
     public DateTime DateCreated { get; set; }
     public string? CargoTrackingNumber { get; set; }
 
+    public DeliveryStatus Status { get; set; } = DeliveryStatus.New;
     public Customer Customer { get; set; } = null!;
+    public CustomerAddress CustomerAddress { get; set; } = null!;
     public ICollection<OrderDetail> OrderDetails { get; set; } = new HashSet<OrderDetail>();
 
     [NotMapped]

@@ -50,11 +50,11 @@
                 }
                 else
                 {
-                    <a class="btn btn-outline-primary d-flex gap-2 align-items-center" asp-controller="Favorites" asp-action="RemoveFromFavorites" asp-route-id="@Model.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.Path">
+                    <a class="btn btn-outline-primary d-flex gap-2 align-items-center w-50" asp-controller="Favorites" asp-action="RemoveFromFavorites" asp-route-id="@Model.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.Path">
                         <i class="bx bx-heart"></i> Favorilerden Çıkar
                     </a>
                 }
-                <form asp-action="AddToShoppingCart" method="get">
+                <form asp-controller="Checkout" asp-action="AddToShoppingCart" asp-route-id="@Model.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.Path" method="get">
                     <input type="hidden" name="id" value="@Model.Id" />
                     <div class="d-flex gap-3">
                         <div class="d-flex gap-1">

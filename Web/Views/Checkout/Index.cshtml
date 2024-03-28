@@ -1,0 +1,118 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model CheckoutViewModel
+@{
+    ViewData["Title"] = "Sepetiniz";
+    ViewData["navbarHideToggle"] = true;
+    ViewData["isMenu"] = false;
+    ViewData["menuFixed"] = "";
+    Layout = "_ContentNavbarLayout";
+}
+
+<h2>@ViewData["Title"]</h2>
+@if (Model.ShoppingCartItems.Any())
+{
+    <div class="d-flex py-2">
+        <a class="btn btn-outline-danger ms-auto" asp-action="ClearShoppingCart">Temizle</a>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-9">
+            <table class="table">
+                <colgroup>
+                    <col width="120" />
+                    <col />
+                    <col />
+                    <col width="40" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>
+                            Görsel
+                        </th>
+                        <th>
+                            Ürün Adı
+                        </th>
+                        <th>
+                            Fiyat
+                        </th>
+                        <th>
+                            Miktar
+                        </th>
+                        <th>
+                            Tutar
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ShoppingCartItems)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-controller="Home" asp-action="Product" asp-route-id="@item.Product.Id">
+                                    <img src="@item.Product!.Image" class="img-fluid object-fit-contain" onerror="this.onerror=null;this.src = '/images/no-image.jpg'" />
+                                </a>
+                            </td>
+                            <td>
+                                @item.Product.Name
+                            </td>
+                            <td class="text-end font-monospace">
+                                ₺@item.Product.DiscountedPrice.ToString("N2")
+                                <div class="small text-decoration-line-through text-muted">
+                                    ₺@item.Product.Price.ToString("N2")
+                                </div>
+                            </td>
+                            <td class="text-end font-monospace">
+                                <div class="d-flex align-items-center">
+                                    <a class="btn btn-link" asp-action="AddToShoppingCart" asp-route-id="@item.Product.Id" asp-route-quantity="-1" asp-route-returnUrl="@ViewContext.HttpContext.Request.Path">
+                                        -
+                                    </a>
+                                    @item.Quantity.ToString("n0")
+                                    <a class="btn btn-link" asp-action="AddToShoppingCart" asp-route-id="@item.Product.Id" asp-route-quantity="1" asp-route-returnUrl="@ViewContext.HttpContext.Request.Path">
+                                        +
+                                    </a>
+                                </div>
+
+                            </td>
+                            <td class="text-end font-monospace">
+                                ₺ @item.LineTotal.ToString("N2")
+                                <div class="small text-decoration-line-through text-muted">
+                                    ₺@item.BaseLineTotal.ToString("N2")
+                                </div>
+                            </td>
+                            <td>
+                                <a class="btn btn-link" asp-action="RemoveFromShoppingCart" asp-route-id="@item.Id">
+                                    <i class="bx bx-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <div class="col-12 col-md-3">
+            <div class=" d-flex flex-column gap-2">
+                <div class="text-bg-danger p-4">
+                    <div>Genel Toplam</div>
+                    <div class="h2 text-white">₺ @Model.GrandTotal.ToString("n2")</div>
+                    <div class="text-white">Kazancınız <br />₺ @Model.Earning.ToString("n2")</div>
+                </div>
+                <a class="btn btn-success text-white" asp-action="Payment">SATIN AL</a>
+            </div>
+
+        </div>
+    </div>
+}
+else
+{
+    <div class="d-flex flex-column align-items-center justify-content-center gap-2">
+        <div class="fs-1"><i class="bi bi-emoji-frown"></i></div>
+        <div> Sepetinizde henüz ürün yok.</div>
+    </div>
+}

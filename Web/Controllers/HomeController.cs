@@ -1,4 +1,5 @@
-using Business.Features.Comments;
+﻿using Business.Features.Comments;
+using Business.Features.Orders;
 using Business.Features.Products;
 using Core.Entities;
 using Core.ViewModels;
@@ -11,7 +12,7 @@ using Web.Models;
 using X.PagedList;
 
 namespace Web.Controllers;
-public class HomeController(IProductsService productsService, ICommentsService commentsService/*, ILogger<HomeController> _logger*/) : BaseController
+public class HomeController(IProductsService productsService, ICommentsService commentsService, IOrdersService ordersService) : BaseController
 {
     public async Task<IActionResult> Index(int? pageNumber, string? keywords)
     {
@@ -69,6 +70,10 @@ public class HomeController(IProductsService productsService, ICommentsService c
     [Authorize]
     public async Task<IActionResult> AddComment(CommentViewModel model)
     {
+        if (User.IsInRole("Administrators"))
+        {
+            return Redirect("/Home");
+        }
         await commentsService.CreateCommentAsync(model.ProductId, UserId!.Value, model.Body, model.Rating);
         return RedirectToAction(nameof(Product), new { id = model.ProductId });
     }
@@ -83,5 +88,29 @@ public class HomeController(IProductsService productsService, ICommentsService c
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+    [Authorize]
+    public async Task<IActionResult> Orders()
+    {
+        if (User.IsInRole("Administrators"))
+        {
+            return Redirect("/Home");
+        }
+        var orders = await ordersService.GetAllOrdersMain(UserId!.Value);
+        return View(orders);
+    }
+    [Authorize]
+    public async Task<IActionResult> CancelOrder(Guid id)
+    {
+        if (User.IsInRole("Administrators"))
+        {
+            return Redirect("/Home");
+        }
+        var result = await ordersService.CancelOrder(id);
+        if (result < 0)
+        {
+            return RedirectToAction(nameof(Orders)); //Normalde api olsa hata dönderilmesini sağlarım fakat mvc ve burada temp data ile uyarı döndermeye uğraşmak istemedim
+        }
+        return RedirectToAction(nameof(Orders));
     }
 }
