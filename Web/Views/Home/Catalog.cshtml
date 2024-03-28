@@ -1,6 +1,6 @@
 ﻿@model IPagedList<ProductListViewModel>
 @{
-    ViewData["Title"] = "Without Menu layout - Layouts";
+    ViewData["Title"] = ViewBag.Catalog;
     ViewData["navbarHideToggle"] = true;
     ViewData["isMenu"] = false;
     ViewData["menuFixed"] = "";
@@ -10,7 +10,8 @@
     var returnValue = ViewContext.HttpContext.Request.Path + "?" + (!String.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["keywords"]) ? "keywords=" + ViewContext.HttpContext.Request.Query["keywords"] : "") + (!String.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["pageNumber"]) ? "&pageNumber=" + ViewContext.HttpContext.Request.Query["pageNumber"] : "&pageNumber=" + "1");
 }
 @* ************** Content ************** *@
-
+<h2>@ViewBag.Catalog</h2>
+<hr/>
 <div class="row row-cols-1 row-cols-md-4 g-3">
     @foreach (var product in Model)
     {

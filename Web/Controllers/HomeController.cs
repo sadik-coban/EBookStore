@@ -1,4 +1,5 @@
-﻿using Business.Features.Comments;
+﻿using Business.Features.Catalogs;
+using Business.Features.Comments;
 using Business.Features.Orders;
 using Business.Features.Products;
 using Core.Entities;
@@ -12,7 +13,7 @@ using Web.Models;
 using X.PagedList;
 
 namespace Web.Controllers;
-public class HomeController(IProductsService productsService, ICommentsService commentsService, IOrdersService ordersService) : BaseController
+public class HomeController(ICatalogsService catalogsService,IProductsService productsService, ICommentsService commentsService, IOrdersService ordersService) : BaseController
 {
     public async Task<IActionResult> Index(int? pageNumber, string? keywords)
     {
@@ -34,6 +35,7 @@ public class HomeController(IProductsService productsService, ICommentsService c
 
     public async Task<IActionResult> Catalog(Guid id, int? pageNumber)
     {
+        ViewBag.Catalog = await catalogsService.GetNameById(id);
         if (pageNumber <= 0)
         {
             pageNumber = 1;

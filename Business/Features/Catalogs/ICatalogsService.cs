@@ -14,4 +14,5 @@ public interface ICatalogsService
     Task<int> UpdateCatalogAsync(CatalogInputModel catalogInput, Guid catalogId);
     Task<int> DeleteCatalogAsync(Guid id);
     Task<ICollection<KeyNameDTO>> GetKeyNameListAsync();
+    Task<string> GetNameById(Guid id);
 }

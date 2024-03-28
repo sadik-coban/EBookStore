@@ -112,4 +112,9 @@ public class CatalogsService(IRepositoryBase<Catalog> catalogsRepository) : ICat
             Name = p.Name,
         }),p => p.Enabled, query => query.OrderBy(p => p.Name), include: null, withDeleted: false, asNoTracking: true);
     }
+
+    public async Task<string> GetNameById(Guid id)
+    {
+        return await catalogsRepository.GetAsync(p => p.Id == id, query => query.Select(p => p.Name), withDeleted:false);
+    }
 }
