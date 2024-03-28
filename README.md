@@ -1,5 +1,5 @@
 # EBookStore
-## A book store with an admin panel
+## A book store with admin panel
 In this project I used mailtrap for smtp server. If you don't want to use mailtrap you can directly use customer credentials below.
 
 Email = user@mail.com,
