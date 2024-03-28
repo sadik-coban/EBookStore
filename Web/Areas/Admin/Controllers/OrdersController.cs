@@ -1,7 +1,10 @@
-﻿using Business.Features.Orders;
+﻿using Business.Features.Catalogs;
+using Business.Features.Orders;
+using Core.Entities;
 using Core.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using X.PagedList;
 
 namespace Web.Areas.Admin.Controllers;
 
@@ -9,10 +12,22 @@ namespace Web.Areas.Admin.Controllers;
 [Authorize(Roles = "Administrators")]
 public class OrdersController(IOrdersService ordersService) : Controller
 {
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int? pageNumber)
     {
-        var orders = await ordersService.GetAllOrdersMain();
-        return View(orders);
+        if (pageNumber <= 0)
+        {
+            pageNumber = 1;
+        }
+        IPagedList<OrderViewModel> list;
+        if (pageNumber == null)
+        {
+            list = await ordersService.GetAllOrdersMain();
+        }
+        else
+        {
+            list = await ordersService.GetAllOrdersMain(pageNumber: pageNumber.Value);
+        }
+        return View(list);
     }
 
     public IActionResult UpdateStatusToOnDelivery()

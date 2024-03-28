@@ -86,10 +86,22 @@ public class HomeController(IProductsService productsService, ICommentsService c
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
     [Authorize(Roles = "Members")]
-    public async Task<IActionResult> Orders()
+    public async Task<IActionResult> Orders(int? pageNumber)
     {
-        var orders = await ordersService.GetAllOrdersMain(UserId!.Value);
-        return View(orders);
+        if (pageNumber <= 0)
+        {
+            pageNumber = 1;
+        }
+        IPagedList<OrderViewModel> list;
+        if (pageNumber == null)
+        {
+            list = await ordersService.GetAllOrdersMain(UserId!.Value);
+        }
+        else
+        {
+            list = await ordersService.GetAllOrdersMain(UserId!.Value, pageNumber: pageNumber.Value);
+        }
+        return View(list);
     }
     [Authorize(Roles = "Members")]
     public async Task<IActionResult> CancelOrder(Guid id)

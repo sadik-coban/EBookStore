@@ -8,11 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Dtos;
 using System.Linq.Expressions;
+using X.PagedList;
 
 namespace Business.Features.Orders;
 public class OrdersService(IRepositoryBase<Order> orderRepository) : IOrdersService
 {
-    public async Task<ICollection<OrderViewModel>> GetAllOrdersMain(Guid? userId = null)
+    public async Task<IPagedList<OrderViewModel>> GetAllOrdersMain(Guid? userId = null, int pageNumber = 1, int pageSize = 10)
     {
         Expression<Func<Order, bool>>? predicate = userId == null ? null : p => p.CustomerId == userId;
         return await orderRepository.GetListAsync(query => query.Select(p => new OrderViewModel
@@ -41,7 +42,7 @@ public class OrdersService(IRepositoryBase<Order> orderRepository) : IOrdersServ
                 Price = q.Price,
                 DiscountRate = q.DiscountRate
             }),
-        }), predicate,orderBy: query => query.OrderByDescending(p => p.DateCreated),include: null,withDeleted: false, asNoTracking: true);;
+        }), predicate,orderBy: query => query.OrderByDescending(p => p.DateCreated),include: null,pageNumber: pageNumber,pageSize: pageSize,withDeleted: false, asNoTracking: true);
     }
     public async Task<int> CancelOrder(Guid id)
     {

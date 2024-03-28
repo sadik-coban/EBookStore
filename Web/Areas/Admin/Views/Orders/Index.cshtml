@@ -1,4 +1,4 @@
-﻿@model ICollection<OrderViewModel>
+﻿@model IPagedList<OrderViewModel>
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -124,3 +124,47 @@
         </div>
     </div>
 }
+
+
+
+<div class="card mt-3">
+    <div class="d-flex justify-content-center">
+        <div class="col-lg-6">
+            <div class="demo-inline-spacing">
+                <!-- Basic Pagination -->
+                <nav aria-label="Page navigation" class="d-flex justify-content-center">
+                    <ul class="pagination">
+                        <li class="page-item first">
+                            <a class="page-link" asp-route-pageNumber="1"><i class="tf-icon bx bx-chevrons-left"></i></a>
+                        </li>
+                        <li class="page-item prev">
+                            <a class="page-link" asp-route-pageNumber="@(Model.PageNumber - 1 <= 0 ? 1 :Model.PageNumber - 1)"><i class="tf-icon bx bx-chevron-left"></i></a>
+                        </li>
+                        @for (int i = 1; i <= Model.PageCount; i++)
+                        {
+                            if (Model.PageNumber == i)
+                            {
+                                <li class="page-item active">
+                                    <a class="page-link" asp-route-pageNumber="@i">@i</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-route-pageNumber="@i">@i</a>
+                                </li>
+                            }
+                        }
+                        <li class="page-item next">
+                            <a class="page-link" asp-route-pageNumber="@(Model.PageNumber + 1 > Model.PageCount? Model.PageCount:Model.PageNumber + 1 )"><i class="tf-icon bx bx-chevron-right"></i></a>
+                        </li>
+                        <li class="page-item last">
+                            <a class="page-link" asp-route-pageNumber="@Model.PageCount"><i class="tf-icon bx bx-chevrons-right"></i></a>
+                        </li>
+                    </ul>
+                </nav>
+                <!--/ Basic Pagination -->
+            </div>
+        </div>
+    </div>
+</div>
